@@ -36,5 +36,7 @@ public class Model {
 		CalciatoreDAO cdao = new CalciatoreDAO();
 		squadra.setCalciatori(cdao.getRosa(squadra.getNome()));
 	}
+	
+	
 
 }
