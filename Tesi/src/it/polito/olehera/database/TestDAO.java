@@ -24,6 +24,7 @@ public class TestDAO {
 		} catch (Exception e) {
 			throw new RuntimeException("Test FAILED", e);
 		}
+		
 	}
 
 }
