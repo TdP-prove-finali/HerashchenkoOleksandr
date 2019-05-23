@@ -1,6 +1,7 @@
 package it.polito.olehera.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Rosa {
@@ -12,8 +13,14 @@ public class Rosa {
 		this.nome = nome;
 		calciatori = new ArrayList<Calciatore>();
 	}
+	
+	public Rosa(Rosa other) {
+		this.nome = "parziale";
+		calciatori = new ArrayList<Calciatore>(other.getCalciatori());
+	}
 
 	public List<Calciatore> getCalciatori() {
+		Collections.sort(calciatori);
 		return calciatori;
 	}
 
@@ -56,7 +63,7 @@ public class Rosa {
 		
 		return somma;
 	}
-	
+
 	public int numCentrocampisti() {
 		int somma = 0;
 		
@@ -103,7 +110,9 @@ public class Rosa {
 		for (Calciatore c : calciatori)
 			somma += c.getTecnica();
 		
-		return somma/numCalciatori();
+		double result = somma/numCalciatori();
+		
+		return Math.floor(result*10.0)/10.0;
 	}
 	
 	public double mediaFisico() {
@@ -111,17 +120,32 @@ public class Rosa {
 		
 		for (Calciatore c : calciatori)
 			somma += c.getFisico();
+
+		double result = somma/numCalciatori();
 		
-		return somma/numCalciatori();
+		return Math.floor(result*10.0)/10.0;
 	}
 	
-	public double potenzialeTot() {
+	public double mediaPotenziale() {
 		double somma = 0.0;
 		
 		for (Calciatore c : calciatori)
-			somma += c.getPotenziale();
+			somma += c.getPotential();
 		
-		return somma;
+		double result = somma/numCalciatori();
+		
+		return Math.floor(result*10.0)/10.0;
+	}
+	
+	public double mediaOverall() {
+		double somma = 0.0;
+		
+		for (Calciatore c : calciatori)
+			somma += c.getOverall();
+		
+		double result = somma/numCalciatori();
+		
+		return Math.floor(result*10.0)/10.0;
 	}
 
 	@Override

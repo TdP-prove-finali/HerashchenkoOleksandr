@@ -28,11 +28,13 @@ public class SquadraDAO {
 			while (rs.next()) {
 				campionati.add(new Campionato(rs.getString("Campionato")));
 			}
-
+			
+			conn.close();
+			return campionati;
+			
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
-		return campionati;
 	}
 	
 	/*
@@ -52,11 +54,13 @@ public class SquadraDAO {
 			while (rs.next()) {
 				squadre.add(new Rosa(rs.getString("Club")));
 			}
+			
+			conn.close();
+			return squadre;
 
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
-		return squadre;
 	}
 
 }

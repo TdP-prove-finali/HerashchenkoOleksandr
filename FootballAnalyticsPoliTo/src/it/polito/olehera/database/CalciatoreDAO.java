@@ -33,17 +33,19 @@ public class CalciatoreDAO {
 						rs.getInt("Accelerazione"), rs.getInt("Velocità"), rs.getInt("Agilità"), rs.getInt("Reazione"), rs.getInt("Tiro"))); 
 						
 			}
+			
+			conn.close();
+			return rosa;
 
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
-		return rosa;
 	}
 	
 	/*
 	 *   Ottengo la lista di Calciatori dato il Campionato
 	 */
-	public List<Calciatore> getCalciatore(String campionato) {
+	public List<Calciatore> getCalciatori(String campionato) {
 		
 		final String sql = "SELECT * FROM calciatori, squadre WHERE calciatori.Club = squadre.Club AND campionato = ?";
 		List<Calciatore> calciatori = new ArrayList<>();
@@ -58,14 +60,15 @@ public class CalciatoreDAO {
 				calciatori.add(new Calciatore(rs.getInt("Id"), rs.getString("Nome"), rs.getInt("Anni"), rs.getString("Nazionalità"), 
 						rs.getInt("Overall"), rs.getInt("Potential"), new Rosa(rs.getString("Club")), rs.getString("Valore"),
 						rs.getString("Posizione"), rs.getInt("Cross"), rs.getInt("Dribbling"), rs.getInt("Controllo"), 
-						rs.getInt("Accelerazione"), rs.getInt("Velocità"), rs.getInt("Agilità"), rs.getInt("Reazione"), rs.getInt("Tiro"))); 
-						
+						rs.getInt("Accelerazione"), rs.getInt("Velocità"), rs.getInt("Agilità"), rs.getInt("Reazione"), rs.getInt("Tiro"))); 	
 			}
+			
+			conn.close();
+			return calciatori;
 
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
-		return calciatori;
 	}
 
 }

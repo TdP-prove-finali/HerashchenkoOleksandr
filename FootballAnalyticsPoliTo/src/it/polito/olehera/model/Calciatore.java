@@ -1,6 +1,6 @@
 package it.polito.olehera.model;
 
-public class Calciatore {
+public class Calciatore implements Comparable<Calciatore>{
 	
 	private int id;
 	private String nome;
@@ -19,6 +19,7 @@ public class Calciatore {
 	private int agilità;
 	private int reazione;
 	private int tiro;
+	private String ruolo;
 	
 	public Calciatore(int id, String nome, int anni, String nazionalità, int overall, int potential, Rosa club,
 			          String valore, String posizione, int cross, int dribbling, int controllo, int accelerazione, 
@@ -40,6 +41,7 @@ public class Calciatore {
 		this.agilità = agilità;
 		this.reazione = reazione;
 		this.tiro = tiro;
+		setRuolo();
 	}
 
 	public int getId() {
@@ -128,9 +130,7 @@ public class Calciatore {
 		return (int)prezzo;
 	}
 	
-	public String getRuolo() {
-		String ruolo = "";
-		
+	public void setRuolo() {
 		switch (posizione.trim()) {
 		case "GK": ruolo = "portiere"; break;
 		case "RB": ruolo = "difensore"; break;
@@ -160,7 +160,9 @@ public class Calciatore {
 		case "RS": ruolo = "attaccante"; break;
 		case "ST": ruolo = "attaccante"; break;
 		}
-		
+	}
+	
+	public String getRuolo() {
 		return ruolo;
 	}
 	
@@ -170,10 +172,6 @@ public class Calciatore {
 	
 	public double getFisico() {
 		return (accelerazione+velocità+reazione+agilità)/4;
-	}
-	
-	public double getPotenziale() {
-		return (potential-overall)/anni;
 	}
 
 	@Override
@@ -200,7 +198,12 @@ public class Calciatore {
 
 	@Override
 	public String toString() {
-		return nome+" "+anni+" "+nazionalità+" "+getRuolo()+" "+valore;
+		return nome;
+	}
+
+	@Override
+	public int compareTo(Calciatore o) {
+		return ruolo.compareTo(o.ruolo);
 	}
 
 }

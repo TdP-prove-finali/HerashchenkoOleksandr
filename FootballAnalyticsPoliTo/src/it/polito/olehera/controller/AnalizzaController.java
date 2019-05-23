@@ -8,16 +8,23 @@ import java.util.ResourceBundle;
 import it.polito.olehera.model.Calciatore;
 import it.polito.olehera.model.Model;
 import it.polito.olehera.model.Rosa;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.chart.BarChart;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 
 public class AnalizzaController {
 	
@@ -46,13 +53,16 @@ public class AnalizzaController {
     private Label lblValore;
 
     @FXML
-    private BarChart<?, ?> grafico;
+    private BarChart<String, Double> grafico;
+    
+    @FXML
+    private CategoryAxis asseX;
+
+    @FXML
+    private NumberAxis asseY;
 
     @FXML
     private Label lblSquadra;
-
-    @FXML
-    private TextArea txtCalciatori;
 
     @FXML
     private Button btnCambia;
@@ -60,7 +70,26 @@ public class AnalizzaController {
     @FXML
     private Button btnOttimizza;
     
-    private void setup() {
+    @FXML
+    private TableView<Calciatore> tabella;
+
+    @FXML
+    private TableColumn<Calciatore, String> colNome;
+
+    @FXML
+    private TableColumn<Calciatore, Integer> colAnni;
+
+    @FXML
+    private TableColumn<Calciatore, String> colNaz;
+
+    @FXML
+    private TableColumn<Calciatore, String> colRuolo;
+
+    @FXML
+    private TableColumn<Calciatore, String> colVal;
+    
+    @SuppressWarnings("unchecked")
+	private void setup() {
     	Rosa scelta = model.getSquadraAnalizza();
     	
     	lblSquadra.setText(scelta.getNome());
@@ -72,12 +101,21 @@ public class AnalizzaController {
     	NumberFormat nf = NumberFormat.getInstance(Locale.ITALIAN);
     	lblValore.setText(nf.format(scelta.valoreTot())+" €");
     	
+    	ObservableList<Calciatore> values = FXCollections.observableArrayList();
     	for (Calciatore c : scelta.getCalciatori())
-    		txtCalciatori.appendText("\n"+c.toString());
+    		values.add(c);
     	
-    	txtCalciatori.appendText("\nFisico: "+scelta.mediaFisico());
-    	txtCalciatori.appendText("\nTecnica: "+scelta.mediaTecnica());
-    	txtCalciatori.appendText("\nPotenziale: "+scelta.potenzialeTot());
+    	tabella.setItems(values);
+    	
+    	XYChart.Series<String, Double> statistiche = new XYChart.Series<String, Double>();
+    	
+    	statistiche.getData().add(new XYChart.Data<String, Double>("Overall", scelta.mediaOverall()));
+    	statistiche.getData().add(new XYChart.Data<String, Double>("Potenziale", scelta.mediaPotenziale()));
+    	statistiche.getData().add(new XYChart.Data<String, Double>("Fisico", scelta.mediaFisico()));
+    	statistiche.getData().add(new XYChart.Data<String, Double>("Tecnica", scelta.mediaTecnica()));
+    	
+    	grafico.getData().addAll(statistiche);
+    	grafico.setLegendVisible(false);
     }
 
     @FXML
@@ -132,10 +170,23 @@ public class AnalizzaController {
         assert lblEta != null : "fx:id=\"lblEta\" was not injected: check your FXML file 'Analizza.fxml'.";
         assert lblValore != null : "fx:id=\"lblValore\" was not injected: check your FXML file 'Analizza.fxml'.";
         assert grafico != null : "fx:id=\"grafico\" was not injected: check your FXML file 'Analizza.fxml'.";
+        assert asseX != null : "fx:id=\"asseX\" was not injected: check your FXML file 'Analizza.fxml'.";
+        assert asseY != null : "fx:id=\"asseY\" was not injected: check your FXML file 'Analizza.fxml'.";
         assert lblSquadra != null : "fx:id=\"lblSquadra\" was not injected: check your FXML file 'Analizza.fxml'.";
-        assert txtCalciatori != null : "fx:id=\"txtCalciatori\" was not injected: check your FXML file 'Analizza.fxml'.";
         assert btnCambia != null : "fx:id=\"btnCambia\" was not injected: check your FXML file 'Analizza.fxml'.";
         assert btnOttimizza != null : "fx:id=\"btnOttimizza\" was not injected: check your FXML file 'Analizza.fxml'.";
+        assert tabella != null : "fx:id=\"tabella\" was not injected: check your FXML file 'Analizza.fxml'.";
+        assert colNome != null : "fx:id=\"colNome\" was not injected: check your FXML file 'Analizza.fxml'.";
+        assert colAnni != null : "fx:id=\"colAnni\" was not injected: check your FXML file 'Analizza.fxml'.";
+        assert colNaz != null : "fx:id=\"colNaz\" was not injected: check your FXML file 'Analizza.fxml'.";
+        assert colRuolo != null : "fx:id=\"colRuolo\" was not injected: check your FXML file 'Analizza.fxml'.";
+        assert colVal != null : "fx:id=\"colVal\" was not injected: check your FXML file 'Analizza.fxml'.";
+        
+        colNome.setCellValueFactory(new PropertyValueFactory<>("nome"));
+        colAnni.setCellValueFactory(new PropertyValueFactory<>("anni"));
+        colNaz.setCellValueFactory(new PropertyValueFactory<>("nazionalità"));
+        colRuolo.setCellValueFactory(new PropertyValueFactory<>("ruolo"));
+        colVal.setCellValueFactory(new PropertyValueFactory<>("valore"));
     }
     
 }
