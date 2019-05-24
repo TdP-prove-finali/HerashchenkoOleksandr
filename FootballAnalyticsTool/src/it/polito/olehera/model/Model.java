@@ -51,7 +51,7 @@ public class Model {
 		calciatori.removeAll(squadra.getCalciatori());
 	}
 	
-	public Rosa calcolaRosaOttimizzata(int budget) {
+	public Rosa calcolaRosaOttimizzata(int budget, double t, double q, int num) {
 		best = new Rosa("best");
 		Rosa parziale = new Rosa(squadra);
 		this.budget = budget;

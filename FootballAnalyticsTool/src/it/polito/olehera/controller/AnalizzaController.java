@@ -8,11 +8,17 @@ import java.util.ResourceBundle;
 import it.polito.olehera.model.Calciatore;
 import it.polito.olehera.model.Model;
 import it.polito.olehera.model.Rosa;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Bounds;
+import javafx.scene.Group;
+import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.CategoryAxis;
@@ -21,6 +27,7 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -88,7 +95,7 @@ public class AnalizzaController {
     @FXML
     private TableColumn<Calciatore, String> colVal;
     
-    @SuppressWarnings("unchecked")
+    
 	private void setup() {
     	Rosa scelta = model.getSquadraAnalizza();
     	
@@ -109,12 +116,12 @@ public class AnalizzaController {
     	
     	XYChart.Series<String, Double> statistiche = new XYChart.Series<String, Double>();
     	
-    	statistiche.getData().add(new XYChart.Data<String, Double>("Overall", scelta.mediaOverall()));
-    	statistiche.getData().add(new XYChart.Data<String, Double>("Potenziale", scelta.mediaPotenziale()));
-    	statistiche.getData().add(new XYChart.Data<String, Double>("Fisico", scelta.mediaFisico()));
-    	statistiche.getData().add(new XYChart.Data<String, Double>("Tecnica", scelta.mediaTecnica()));
+    	statistiche.getData().add(createData("Overall", scelta.mediaOverall()));
+    	statistiche.getData().add(createData("Potenziale", scelta.mediaPotenziale()));
+    	statistiche.getData().add(createData("Fisico", scelta.mediaFisico()));
+    	statistiche.getData().add(createData("Tecnica", scelta.mediaTecnica()));
     	
-    	grafico.getData().addAll(statistiche);
+    	grafico.getData().add(statistiche);
     }
 
     @FXML
@@ -187,4 +194,36 @@ public class AnalizzaController {
         colVal.setCellValueFactory(new PropertyValueFactory<>("valore"));
     }
     
+    private XYChart.Data<String, Double> createData(String nome, double valore) {
+    	XYChart.Data<String, Double> data = new XYChart.Data<String, Double>(nome, valore);
+    	
+    	data.nodeProperty().addListener(new ChangeListener<Node>() {
+            @Override public void changed(ObservableValue<? extends Node> ov, Node oldNode, final Node node) {
+              if (node != null)
+                displayLabelForData(data);
+            }
+        });
+    	
+    	return data;
+    }
+    
+    /** places a text label with a bar's value above a bar node for a given XYChart.Data */
+    private void displayLabelForData(XYChart.Data<String, Double> data) {
+      final Node node = data.getNode();
+      final Text dataText = new Text(data.getYValue() + "");
+      node.parentProperty().addListener(new ChangeListener<Parent>() {
+        @Override public void changed(ObservableValue<? extends Parent> ov, Parent oldParent, Parent parent) {
+          Group parentGroup = (Group) parent;
+          parentGroup.getChildren().add(dataText);
+        }
+      });
+
+      node.boundsInParentProperty().addListener(new ChangeListener<Bounds>() {
+        @Override public void changed(ObservableValue<? extends Bounds> ov, Bounds oldBounds, Bounds bounds) {
+          dataText.setLayoutX(Math.round(bounds.getMinX() + bounds.getWidth() / 2 - dataText.prefWidth(-1) / 2));
+          dataText.setLayoutY(Math.round(bounds.getMinY() - dataText.prefHeight(-1) * 0.5));
+        }
+      });
+    }
+
 }
