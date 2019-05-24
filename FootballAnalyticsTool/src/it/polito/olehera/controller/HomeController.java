@@ -12,6 +12,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
@@ -37,13 +38,24 @@ public class HomeController {
 
     @FXML
     private ComboBox<Rosa> cbxClub;
+    
+    @FXML
+    private Label lblErr;
 
     @FXML
     private Button btnAnalizza;
 
     @FXML
     void doAnalisi(ActionEvent event) {
-    	model.setSquadraAnalizza(cbxClub.getValue());
+    	
+    	Rosa scelta = cbxClub.getValue();
+    	
+    	if (scelta != null)
+    		model.setSquadraAnalizza(scelta);
+    	else {
+    		lblErr.setText("Scegliere prima un Campionato e poi un Club"); 
+    		return ;
+    	}
     	
     	try {
     		
@@ -54,9 +66,9 @@ public class HomeController {
 			AnalizzaController controller = loader.getController();
  			controller.setModel(model, stage);
 			
-			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-			stage.setTitle("Football Analytics PoliTo");
+			stage.setTitle("Football Analytics Tool");
 			stage.setScene(scene);
+			stage.setAlwaysOnTop(true);
 			stage.show();
 			
 		} catch(Exception e) {
@@ -75,6 +87,7 @@ public class HomeController {
     void initialize() {
         assert cbxCampionato != null : "fx:id=\"cbxCampionato\" was not injected: check your FXML file 'Home.fxml'.";
         assert cbxClub != null : "fx:id=\"cbxClub\" was not injected: check your FXML file 'Home.fxml'.";
+        assert lblErr != null : "fx:id=\"lblErr\" was not injected: check your FXML file 'Home.fxml'.";
         assert btnAnalizza != null : "fx:id=\"btnAnalizza\" was not injected: check your FXML file 'Home.fxml'.";
     }
     

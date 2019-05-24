@@ -1,4 +1,4 @@
-# Football Analytics PoliTo - Tool per Società Calcistica
+# Football Analytics Tool
 
 
 

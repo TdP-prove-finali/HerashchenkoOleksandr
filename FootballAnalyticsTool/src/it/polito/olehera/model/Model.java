@@ -14,6 +14,7 @@ public class Model {
 	private SquadraDAO sdao;
 	private CalciatoreDAO cdao;
 	private List<Calciatore> calciatori;
+	private int budget;
 	
 	public Model() {
 		cdao = new CalciatoreDAO();
@@ -50,9 +51,10 @@ public class Model {
 		calciatori.removeAll(squadra.getCalciatori());
 	}
 	
-	public Rosa calcolaRosaOttimizzata() {
+	public Rosa calcolaRosaOttimizzata(int budget) {
 		best = new Rosa("best");
 		Rosa parziale = new Rosa(squadra);
+		this.budget = budget;
 		
 		ottimizza(parziale, 0);
 		
@@ -61,10 +63,13 @@ public class Model {
 	
 	private void ottimizza(Rosa parziale, int L) {
 		
-		if (parziale.numPortieri() < 3) 
+		if ( parziale.valoreTot() > squadra.valoreTot() + budget )
 			return ;
 		
-		if (parziale.etaMedia() > best.etaMedia()) {
+		if ( parziale.numPortieri() < 3 ) 
+			return ;
+		
+		if ( parziale.etaMedia() > best.etaMedia() ) {
 			best.setCalciatori(parziale.getCalciatori());
 			return ;
 		}

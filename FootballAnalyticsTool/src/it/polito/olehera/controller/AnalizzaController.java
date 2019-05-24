@@ -115,7 +115,6 @@ public class AnalizzaController {
     	statistiche.getData().add(new XYChart.Data<String, Double>("Tecnica", scelta.mediaTecnica()));
     	
     	grafico.getData().addAll(statistiche);
-    	grafico.setLegendVisible(false);
     }
 
     @FXML
@@ -131,8 +130,7 @@ public class AnalizzaController {
 			Model m = new Model();
  			controller.setModel(m, stage);
 			
-			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-			stage.setTitle("Football Analytics PoliTo");
+			stage.setTitle("Football Analytics Tool");
 			stage.setScene(scene);
 			stage.show();
 			
@@ -150,12 +148,12 @@ public class AnalizzaController {
 			BorderPane root = (BorderPane) loader.load();
 			Scene scene = new Scene(root);
 			
-//			OttimizzaController controller = loader.getController();
+			OttimizzaController controller = loader.getController();
 			Stage s = new Stage();
-// 			controller.setModel(model, s);
+			controller.setModel(model);
 			
-			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-			s.setTitle("Football Analytics PoliTo");
+			s.setAlwaysOnTop(true);
+			s.setTitle("Football Analytics Tool");
 			s.setScene(scene);
 			s.show();
 			

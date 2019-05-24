@@ -22,8 +22,7 @@ public class Main extends Application {
 			Model model = new Model();
  			controller.setModel(model, primaryStage);
 			
-			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-			primaryStage.setTitle("Football Analytics PoliTo");
+			primaryStage.setTitle("Football Analytics Tool");
 			primaryStage.setScene(scene);
 			primaryStage.show();
 			
