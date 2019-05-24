@@ -63,7 +63,7 @@ public class Model {
 	
 	private void ottimizza(Rosa parziale, int L) {
 		
-		if ( parziale.valoreTot() > squadra.valoreTot() + budget )
+		if ( parziale.valoreTot() > (squadra.valoreTot() + budget) )
 			return ;
 		
 		if ( parziale.numPortieri() < 3 ) 

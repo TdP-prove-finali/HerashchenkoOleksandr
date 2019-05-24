@@ -104,6 +104,7 @@ public class OttimizzaController {
     	lblErr.setText("");
     	
     	Rosa ottimizzata = model.calcolaRosaOttimizzata(budget);
+    	Rosa analizzata = model.getSquadraAnalizza();
     	
     	if (ottimizzata.getCalciatori().size() < 1) {
     		lblErr.setText("Non è possibile ottimizzare la Rosa con questi parametri");
@@ -123,15 +124,23 @@ public class OttimizzaController {
     	
     	tabella.setItems(values);
     	
-    	XYChart.Series<String, Double> statistiche = new XYChart.Series<String, Double>();
-    	
-    	statistiche.getData().add(new XYChart.Data<String, Double>("Overall", ottimizzata.mediaOverall()));
-    	statistiche.getData().add(new XYChart.Data<String, Double>("Potenziale", ottimizzata.mediaPotenziale()));
-    	statistiche.getData().add(new XYChart.Data<String, Double>("Fisico", ottimizzata.mediaFisico()));
-    	statistiche.getData().add(new XYChart.Data<String, Double>("Tecnica", ottimizzata.mediaTecnica()));
-    	
     	grafico.getData().clear();
-    	grafico.getData().addAll(statistiche);
+    	
+    	XYChart.Series<String, Double> statisticheA = new XYChart.Series<String, Double>();
+    	
+    	statisticheA.getData().add(new XYChart.Data<String, Double>("Overall", analizzata.mediaOverall()));
+    	statisticheA.getData().add(new XYChart.Data<String, Double>("Potenziale", analizzata.mediaPotenziale()));
+    	statisticheA.getData().add(new XYChart.Data<String, Double>("Fisico", analizzata.mediaFisico()));
+    	statisticheA.getData().add(new XYChart.Data<String, Double>("Tecnica", analizzata.mediaTecnica()));
+    	
+    	XYChart.Series<String, Double> statisticheO = new XYChart.Series<String, Double>();
+    	
+    	statisticheO.getData().add(new XYChart.Data<String, Double>("Overall", ottimizzata.mediaOverall()));
+    	statisticheO.getData().add(new XYChart.Data<String, Double>("Potenziale", ottimizzata.mediaPotenziale()));
+    	statisticheO.getData().add(new XYChart.Data<String, Double>("Fisico", ottimizzata.mediaFisico()));
+    	statisticheO.getData().add(new XYChart.Data<String, Double>("Tecnica", ottimizzata.mediaTecnica()));
+    	
+    	grafico.getData().addAll(statisticheA, statisticheO);
     }
 
     @FXML

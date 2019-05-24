@@ -102,7 +102,7 @@
    <top>
       <VBox prefHeight="149.0" prefWidth="699.0" BorderPane.alignment="CENTER">
          <children>
-            <GridPane alignment="CENTER" pickOnBounds="false" prefHeight="102.0" prefWidth="699.0">
+            <GridPane alignment="CENTER" pickOnBounds="false" prefHeight="96.0" prefWidth="699.0">
               <columnConstraints>
                 <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="242.0" minWidth="10.0" prefWidth="221.0" />
                 <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="469.0" minWidth="10.0" prefWidth="335.0" />
@@ -125,11 +125,11 @@
                   </Button>
                   <TextField fx:id="txtBudget" alignment="CENTER" maxWidth="120.0" prefHeight="25.0" prefWidth="120.0">
                      <GridPane.margin>
-                        <Insets left="5.0" />
+                        <Insets left="10.0" />
                      </GridPane.margin></TextField>
                   <Label prefHeight="17.0" prefWidth="48.0" text="Budget:" GridPane.halignment="LEFT" GridPane.valignment="CENTER">
                      <GridPane.margin>
-                        <Insets left="10.0" />
+                        <Insets left="15.0" />
                      </GridPane.margin>
                      <font>
                         <Font name="System Bold" size="12.0" />
@@ -152,7 +152,7 @@
             </GridPane>
             <Label fx:id="lblErr" prefHeight="17.0" prefWidth="647.0" textFill="RED">
                <VBox.margin>
-                  <Insets bottom="5.0" left="10.0" />
+                  <Insets bottom="5.0" left="15.0" />
                </VBox.margin>
                <font>
                   <Font name="SansSerif Regular" size="13.0" />
