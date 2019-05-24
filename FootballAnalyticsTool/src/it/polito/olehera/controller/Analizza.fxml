@@ -68,7 +68,7 @@
                            </tickLabelFont></CategoryAxis>
                     </xAxis>
                     <yAxis>
-                      <NumberAxis fx:id="asseY" prefHeight="304.0" prefWidth="9.0" side="LEFT" />
+                      <NumberAxis fx:id="asseY" animated="false" autoRanging="false" prefHeight="304.0" prefWidth="9.0" side="LEFT" tickUnit="10.0" />
                     </yAxis>
                      <HBox.margin>
                         <Insets />
