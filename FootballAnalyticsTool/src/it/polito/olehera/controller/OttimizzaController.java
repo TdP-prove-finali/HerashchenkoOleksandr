@@ -2,6 +2,8 @@ package it.polito.olehera.controller;
 
 import java.net.URL;
 import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -22,22 +24,26 @@ import javafx.scene.chart.BarChart;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
+import javafx.scene.chart.XYChart.Series;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 
 public class OttimizzaController {
 	
 	private Model model;
+	private List<Calciatore> venduti;
 	
 	public void setModel(Model model) {
 		this.model = model;
+		setup();
+		model.caricaCalciatori();
 	}
 
     @FXML
@@ -96,14 +102,41 @@ public class OttimizzaController {
 
     @FXML
     private Slider sldQualita;
-
+    
     @FXML
-    private ComboBox<Integer> cbxNum;
+    private Label lblCalciatori;
 
     @FXML
     private Label lblErr;
+    
+    private void setup() {
+    	Rosa scelta = model.getSquadraAnalizza();
+    	
+    	lblEta.setText(scelta.etaMedia()+" anni");
+    	
+    	lblNum.setText(""+scelta.numCalciatori());
+    	
+    	NumberFormat nf = NumberFormat.getInstance(Locale.ITALIAN);
+    	lblValore.setText(nf.format(scelta.valoreTot())+" €");
+    	
+    	ObservableList<Calciatore> values = FXCollections.observableArrayList(scelta.getCalciatori());
+    	tabella.setItems(values);
+    	
+    	pulisciGrafico(grafico);
+    	
+    	XYChart.Series<String, Double> statistiche = new XYChart.Series<String, Double>();
+    	
+    	statistiche.getData().add(createData("Overall", scelta.mediaOverall()));
+    	statistiche.getData().add(createData("Potenziale", scelta.mediaPotenziale()));
+    	statistiche.getData().add(createData("Fisico", scelta.mediaFisico()));
+    	statistiche.getData().add(createData("Tecnica", scelta.mediaTecnica()));
+    	
+    	grafico.getData().add(statistiche);
+    	lblErr.setText("Seleziona i calciatori da vendere facendo Click sulla riga");
+    	venduti = new ArrayList<>();
+    	lblCalciatori.setText(""+0);
+    }
 
-	@SuppressWarnings("unchecked")
 	@FXML
     void doCalcolaRosaOttimizzata(ActionEvent event) {
     	
@@ -118,17 +151,10 @@ public class OttimizzaController {
     	
     	double t = sldTempo.getValue();
     	double q = sldQualita.getValue();
-    	int num = cbxNum.getValue();
     	
     	lblErr.setText("");
     	
-    	Rosa ottimizzata = model.calcolaRosaOttimizzata(budget, t, q, num);
-    	Rosa analizzata = model.getSquadraAnalizza();
-    	
-    	if (ottimizzata.getCalciatori().size() < 1) {
-    		lblErr.setText("Non è possibile ottimizzare la Rosa con questi parametri");
-    		return ;
-    	}
+    	Rosa ottimizzata = model.calcolaRosaOttimizzata(venduti, budget, t, q);
     	
     	lblEta.setText(ottimizzata.etaMedia()+" anni");
     	
@@ -143,23 +169,34 @@ public class OttimizzaController {
     	
     	tabella.setItems(values);
     	
-    	grafico.getData().clear();
+    	XYChart.Series<String, Double> statistiche = new XYChart.Series<String, Double>();
     	
-    	XYChart.Series<String, Double> statisticheA = new XYChart.Series<String, Double>();
+    	statistiche.getData().add(createData("Overall", ottimizzata.mediaOverall()));
+    	statistiche.getData().add(createData("Potenziale", ottimizzata.mediaPotenziale()));
+    	statistiche.getData().add(createData("Fisico", ottimizzata.mediaFisico()));
+    	statistiche.getData().add(createData("Tecnica", ottimizzata.mediaTecnica()));
     	
-    	statisticheA.getData().add(createData("Overall", analizzata.mediaOverall()));
-    	statisticheA.getData().add(createData("Potenziale", analizzata.mediaPotenziale()));
-    	statisticheA.getData().add(createData("Fisico", analizzata.mediaFisico()));
-    	statisticheA.getData().add(createData("Tecnica", analizzata.mediaTecnica()));
+    	grafico.getData().add(statistiche);
     	
-    	XYChart.Series<String, Double> statisticheO = new XYChart.Series<String, Double>();
-    	
-    	statisticheO.getData().add(createData("Overall", ottimizzata.mediaOverall()));
-    	statisticheO.getData().add(createData("Potenziale", ottimizzata.mediaPotenziale()));
-    	statisticheO.getData().add(createData("Fisico", ottimizzata.mediaFisico()));
-    	statisticheO.getData().add(createData("Tecnica", ottimizzata.mediaTecnica()));
-    	
-    	grafico.getData().addAll(statisticheA, statisticheO);
+    	btnCalcola.setDisable(true);
+    	txtBudget.setEditable(false);
+    	sldQualita.setDisable(true);
+    	sldTempo.setDisable(true);
+    }
+	
+	@FXML
+    void doAggiungi(MouseEvent event) {
+		Calciatore selected = tabella.getSelectionModel().getSelectedItem();
+		
+		if ( !venduti.contains(selected) ) {
+			venduti.add(selected);
+//			currentRow.setStyle("-fx-background-color:lightgreen");
+		} else {
+			venduti.remove(selected);
+		}
+		
+		lblCalciatori.setText(""+venduti.size());
+		lblErr.setText("");
     }
 
     @FXML
@@ -168,7 +205,11 @@ public class OttimizzaController {
     	lblErr.setText("");
     	sldQualita.setValue(0.5);
     	sldTempo.setValue(0.5);
-//    	cbxNum.setValue(1);
+    	setup();
+    	btnCalcola.setDisable(false);
+    	txtBudget.setEditable(true);
+    	sldQualita.setDisable(false);
+    	sldTempo.setDisable(false);
     }
 
     @FXML
@@ -190,7 +231,7 @@ public class OttimizzaController {
         assert txtBudget != null : "fx:id=\"txtBudget\" was not injected: check your FXML file 'Ottimizza.fxml'.";
         assert sldTempo != null : "fx:id=\"sldTempo\" was not injected: check your FXML file 'Ottimizza.fxml'.";
         assert sldQualita != null : "fx:id=\"sldQualita\" was not injected: check your FXML file 'Ottimizza.fxml'.";
-        assert cbxNum != null : "fx:id=\"cbxNum\" was not injected: check your FXML file 'Ottimizza.fxml'.";
+        assert lblCalciatori != null : "fx:id=\"lblCalciatori\" was not injected: check your FXML file 'Ottimizza.fxml'.";
         assert lblErr != null : "fx:id=\"lblErr\" was not injected: check your FXML file 'Ottimizza.fxml'.";
 
         colNome.setCellValueFactory(new PropertyValueFactory<>("nome"));
@@ -216,20 +257,35 @@ public class OttimizzaController {
     /** places a text label with a bar's value above a bar node for a given XYChart.Data */
     private void displayLabelForData(XYChart.Data<String, Double> data) {
       final Node node = data.getNode();
-      final Text dataText = new Text(data.getYValue() + "");
+      final Text dataText = new Text(data.getYValue() + " ");
       node.parentProperty().addListener(new ChangeListener<Parent>() {
         @Override public void changed(ObservableValue<? extends Parent> ov, Parent oldParent, Parent parent) {
-          Group parentGroup = (Group) parent;
-          parentGroup.getChildren().add(dataText);
-        }
-      });
+        	if (parent != null && parent instanceof Group) {
+        		Group parentGroup = (Group) parent;
+        		parentGroup.getChildren().add(dataText);
+        	}}});
 
       node.boundsInParentProperty().addListener(new ChangeListener<Bounds>() {
         @Override public void changed(ObservableValue<? extends Bounds> ov, Bounds oldBounds, Bounds bounds) {
           dataText.setLayoutX(Math.round(bounds.getMinX() + bounds.getWidth() / 2 - dataText.prefWidth(-1) / 2));
           dataText.setLayoutY(Math.round(bounds.getMinY() - dataText.prefHeight(-1) * 0.5));
-        }
-      });
+        }});
+    }
+    
+    private void pulisciGrafico(BarChart<String, Double> grafico) {
+    	ObservableList<Series<String, Double>> allSeries = grafico.getData();
+        
+            for (XYChart.Series<String, Double> series : allSeries) {
+                for (XYChart.Data<String, Double> data : series.getData()) {
+                    Node node = data.getNode();
+                    Parent parent = node.parentProperty().get();
+                    if (parent != null && parent instanceof Group) {
+                        Group group = (Group) parent;
+                        group.getChildren().clear();
+                    }
+                }
+            }
+            allSeries.clear();
     }
     
 }

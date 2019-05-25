@@ -14,9 +14,13 @@ public class Rosa {
 		calciatori = new ArrayList<Calciatore>();
 	}
 	
-	public Rosa(Rosa other) {
+	public Rosa(Rosa iniziale, List<Calciatore> venduti) {
 		this.nome = "parziale";
-		calciatori = new ArrayList<Calciatore>(other.getCalciatori());
+		calciatori = new ArrayList<Calciatore>();
+		
+		for (Calciatore c : iniziale.getCalciatori())
+			if (!venduti.contains(c))
+				calciatori.add(c);
 	}
 
 	public List<Calciatore> getCalciatori() {

@@ -108,10 +108,7 @@ public class AnalizzaController {
     	NumberFormat nf = NumberFormat.getInstance(Locale.ITALIAN);
     	lblValore.setText(nf.format(scelta.valoreTot())+" €");
     	
-    	ObservableList<Calciatore> values = FXCollections.observableArrayList();
-    	for (Calciatore c : scelta.getCalciatori())
-    		values.add(c);
-    	
+    	ObservableList<Calciatore> values = FXCollections.observableArrayList(scelta.getCalciatori());
     	tabella.setItems(values);
     	
     	XYChart.Series<String, Double> statistiche = new XYChart.Series<String, Double>();
