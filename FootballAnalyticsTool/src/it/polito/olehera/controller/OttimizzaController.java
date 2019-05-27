@@ -125,10 +125,10 @@ public class OttimizzaController {
     	
     	XYChart.Series<String, Double> statistiche = new XYChart.Series<String, Double>();
     	
-    	statistiche.getData().add(createData("Overall", scelta.mediaOverall()));
-    	statistiche.getData().add(createData("Potenziale", scelta.mediaPotenziale()));
-    	statistiche.getData().add(createData("Fisico", scelta.mediaFisico()));
-    	statistiche.getData().add(createData("Tecnica", scelta.mediaTecnica()));
+    	statistiche.getData().add(createData("Overall", Math.floor(scelta.mediaOverall()*10.0)/10.0 ));
+    	statistiche.getData().add(createData("Potenziale", Math.floor(scelta.mediaPotenziale()*10.0)/10.0 ));
+    	statistiche.getData().add(createData("Fisico", Math.floor(scelta.mediaFisico()*10.0)/10.0 ));
+    	statistiche.getData().add(createData("Tecnica", Math.floor(scelta.mediaTecnica()*10.0)/10.0 ));
     	
     	grafico.getData().add(statistiche);
     	lblAvv.setText("Click sulla riga del calciatore per selezionarlo, un'altro Click per deselezionarlo");
@@ -155,8 +155,6 @@ public class OttimizzaController {
     	
     	Rosa ottimizzata = model.calcolaRosaOttimizzata(venduti, budget, t, q);
     	
-    	lblEta.setText(ottimizzata.etaMedia()+" anni");
-    	
     	lblNum.setText(""+ottimizzata.numCalciatori());
     	
     	NumberFormat nf = NumberFormat.getInstance(Locale.ITALIAN);
@@ -170,10 +168,10 @@ public class OttimizzaController {
     	
     	XYChart.Series<String, Double> statistiche = new XYChart.Series<String, Double>();
     	
-    	statistiche.getData().add(createData("Overall", ottimizzata.mediaOverall()));
-    	statistiche.getData().add(createData("Potenziale", ottimizzata.mediaPotenziale()));
-    	statistiche.getData().add(createData("Fisico", ottimizzata.mediaFisico()));
-    	statistiche.getData().add(createData("Tecnica", ottimizzata.mediaTecnica()));
+    	statistiche.getData().add(createData("Overall", Math.floor(ottimizzata.mediaOverall()*10.0)/10.0 ));
+    	statistiche.getData().add(createData("Potenziale", Math.floor(ottimizzata.mediaPotenziale()*10.0)/10.0 ));
+    	statistiche.getData().add(createData("Fisico", Math.floor(ottimizzata.mediaFisico()*10.0)/10.0 ));
+    	statistiche.getData().add(createData("Tecnica", Math.floor(ottimizzata.mediaTecnica()*10.0)/10.0 ));
     	
     	grafico.getData().add(statistiche);
     	

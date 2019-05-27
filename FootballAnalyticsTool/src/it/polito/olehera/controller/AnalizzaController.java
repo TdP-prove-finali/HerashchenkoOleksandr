@@ -113,10 +113,10 @@ public class AnalizzaController {
     	
     	XYChart.Series<String, Double> statistiche = new XYChart.Series<String, Double>();
     	
-    	statistiche.getData().add(createData("Overall", scelta.mediaOverall()));
-    	statistiche.getData().add(createData("Potenziale", scelta.mediaPotenziale()));
-    	statistiche.getData().add(createData("Fisico", scelta.mediaFisico()));
-    	statistiche.getData().add(createData("Tecnica", scelta.mediaTecnica()));
+    	statistiche.getData().add(createData("Overall", Math.floor(scelta.mediaOverall()*10.0)/10.0 ));
+    	statistiche.getData().add(createData("Potenziale", Math.floor(scelta.mediaPotenziale()*10.0)/10.0 ));
+    	statistiche.getData().add(createData("Fisico", Math.floor(scelta.mediaFisico()*10.0)/10.0 ));
+    	statistiche.getData().add(createData("Tecnica", Math.floor(scelta.mediaTecnica()*10.0)/10.0 ));
     	
     	grafico.getData().add(statistiche);
     }

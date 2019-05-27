@@ -55,8 +55,14 @@ public class Model {
 		this.budget = budget;
 		this.t = t;
 		this.q = q;
+		primoBest = 0.0;
+		secondoBest = 0.0;
 		
-		filtraCalciatori();
+		int somma = 0;
+		for (Calciatore calciatore : venduti)
+			somma += calciatore.getPrezzo();
+		
+		filtraCalciatori(parziale, budget+somma);
 		
 		ottimizza(parziale, 0);
 		
@@ -67,7 +73,7 @@ public class Model {
 		
 		if ( L == calciatori.size() ) {
 			if ( controlloMinCalciatori(parziale) && migliore(parziale) ) {
-				best.setCalciatori(parziale.getCalciatori());
+				best.setCalciatori(new ArrayList<>(parziale.getCalciatori()));;
 		        primoBest = (1-t) * best.mediaOverall() + t * best.mediaPotenziale();
 		        secondoBest = (1-q) * best.mediaTecnica() + q * best.mediaFisico();
 		    }
@@ -100,7 +106,7 @@ public class Model {
 	 *  Vincoli aggiuntivi sul numero massimo di Calciatori
 	 */
 	private boolean controlloMaxCalciatori(Rosa parziale) {
-		if ( parziale.numCalciatori() > 34 )
+		if ( parziale.numCalciatori() > 33 )
 			return false;
 		if ( parziale.numAttaccanti() > 8 )
 			return false;
@@ -118,7 +124,7 @@ public class Model {
 	 *  Vincoli aggiuntivi sul numero minimo di Calciatori
 	 */
 	private boolean controlloMinCalciatori(Rosa completa) {
-		if ( completa.numCalciatori() < 24 )
+		if ( completa.numCalciatori() < 25 )
 			return false;
 		if ( completa.numAttaccanti() < 4 )
 			return false;
@@ -136,28 +142,31 @@ public class Model {
 	 *  Multi-obiettivo da massimizzare
 	 */
 	private boolean migliore(Rosa completa) {
-		if ( best.numCalciatori() < 1 )
-			return true;
-		
 		double primo = (1-t) * completa.mediaOverall() + t * completa.mediaPotenziale();
 		double secondo = (1-q) * completa.mediaTecnica() + q * completa.mediaFisico();
 		
-		if ( primo >= primoBest && secondo >= secondoBest  )
+		if ( (primo*0.5+secondo*0.5) >= (primoBest*0.5+secondoBest*0.5) )
 			return true;
 		else 
 			return false;
 	}
 	
-	private void filtraCalciatori() {
+	private void filtraCalciatori(Rosa iniziale, int b) {
 		List<Calciatore> rimuovi = new ArrayList<>();
 		calciatori.removeAll(squadra.getCalciatori());	
 		
-//		for (Calciatore c : calciatori)
-//			if ( c.getPrezzo() >  )
-//				rimuovi.add(c);
+		double primo = (1-t) * iniziale.mediaOverall() + t * iniziale.mediaPotenziale();
+		double secondo = (1-q) * iniziale.mediaTecnica() + q * iniziale.mediaFisico();
+		
+		for (Calciatore c : calciatori) {
+			double p = (1-t) * c.getOverall() + t * c.getPotential();
+			double s = (1-q) * c.getTecnica() + q * c.getFisico();
+			if ( p < primo || s < secondo || c.getPrezzo() > b || c.getRuolo()=="portiere" )
+				rimuovi.add(c); 
+		}
 		
 		calciatori.removeAll(rimuovi);
-		System.out.print("Calciatori filtrati: "+calciatori.size()+"\n");
+		System.out.print("\nCalciatori filtrati: "+calciatori.size()+"\n");
 	}
 
 }

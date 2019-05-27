@@ -114,9 +114,7 @@ public class Rosa {
 		for (Calciatore c : calciatori)
 			somma += c.getTecnica();
 		
-		double result = somma/numCalciatori();
-		
-		return Math.floor(result*10.0)/10.0;
+		return somma/numCalciatori();
 	}
 	
 	public double mediaFisico() {
@@ -124,10 +122,8 @@ public class Rosa {
 		
 		for (Calciatore c : calciatori)
 			somma += c.getFisico();
-
-		double result = somma/numCalciatori();
 		
-		return Math.floor(result*10.0)/10.0;
+		return somma/numCalciatori();
 	}
 	
 	public double mediaPotenziale() {
@@ -136,9 +132,7 @@ public class Rosa {
 		for (Calciatore c : calciatori)
 			somma += c.getPotential();
 		
-		double result = somma/numCalciatori();
-		
-		return Math.floor(result*10.0)/10.0;
+		return somma/numCalciatori();
 	}
 	
 	public double mediaOverall() {
@@ -147,9 +141,7 @@ public class Rosa {
 		for (Calciatore c : calciatori)
 			somma += c.getOverall();
 		
-		double result = somma/numCalciatori();
-		
-		return Math.floor(result*10.0)/10.0;
+		return somma/numCalciatori();
 	}
 
 	@Override
