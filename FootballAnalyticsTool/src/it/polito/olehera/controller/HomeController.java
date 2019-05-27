@@ -59,9 +59,10 @@ public class HomeController {
     	
     	Rosa scelta = cbxClub.getValue();
     	
-    	if (scelta != null)
+    	if (scelta != null) {
     		model.setSquadraAnalizza(scelta);
-    	else {
+    		model.setCampionato(cbxCampionato.getValue());
+    	} else {
     		lblErr.setText("Devi scegliere un Club per procedere"); 
     		return ;
     	}

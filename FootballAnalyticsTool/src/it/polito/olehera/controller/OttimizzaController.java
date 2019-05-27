@@ -30,8 +30,10 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TableView.TableViewSelectionModel;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 
@@ -39,6 +41,7 @@ public class OttimizzaController {
 	
 	private Model model;
 	private List<Calciatore> venduti;
+	private TableViewSelectionModel<Calciatore> defaultSelectionModel;
 	
 	public void setModel(Model model) {
 		this.model = model;
@@ -59,6 +62,12 @@ public class OttimizzaController {
 
     @FXML
     private Label lblValore;
+    
+    @FXML
+    private Label lblBudgetRimasto;
+
+    @FXML
+    private Label lblRimasti;
 
     @FXML
     private BarChart<String, Double> grafico;
@@ -95,6 +104,9 @@ public class OttimizzaController {
 
     @FXML
     private TextField txtBudget;
+    
+    @FXML
+    private ImageView ball;
     
     @FXML
     private Slider sldTempo;
@@ -134,11 +146,11 @@ public class OttimizzaController {
     	lblAvv.setText("Click sulla riga del calciatore per selezionarlo, un'altro Click per deselezionarlo");
     	venduti = new ArrayList<>();
     	lblCalciatori.setText(""+0);
+    	tabella.setSelectionModel(defaultSelectionModel);
     }
 
 	@FXML
     void doCalcolaRosaOttimizzata(ActionEvent event) {
-    	
     	int budget = 0;
     	try {
     	      budget = Integer.parseInt(txtBudget.getText().trim());
@@ -154,6 +166,13 @@ public class OttimizzaController {
     	lblAvv.setText("");
     	
     	Rosa ottimizzata = model.calcolaRosaOttimizzata(venduti, budget, t, q);
+    	
+    	List<Calciatore> nuovi = new ArrayList<>();
+    	for (Calciatore c : ottimizzata.getCalciatori())
+    		if (!model.getSquadraAnalizza().getCalciatori().contains(c))
+    			nuovi.add(c);
+    	
+    	// colora righe dei nuovi calciatori
     	
     	lblNum.setText(""+ottimizzata.numCalciatori());
     	
@@ -175,19 +194,26 @@ public class OttimizzaController {
     	
     	grafico.getData().add(statistiche);
     	
+    	lblBudgetRimasto.setText("Budget Rimasto:");
+    	lblRimasti.setText(""+nf.format(model.getSquadraAnalizza().valoreTot()+budget-ottimizzata.valoreTot())+" €");
+    	
     	btnCalcola.setDisable(true);
     	txtBudget.setEditable(false);
     	sldQualita.setDisable(true);
     	sldTempo.setDisable(true);
+    	tabella.setSelectionModel(null);
     }
 	
 	@FXML
     void doAggiungi(MouseEvent event) {
+		if ( tabella.getSelectionModel() != null ) {
 		Calciatore selected = tabella.getSelectionModel().getSelectedItem();
 		
 		if ( !venduti.contains(selected) ) {
 			venduti.add(selected);
-//			currentRow.setStyle("-fx-background-color:lightgreen");
+			colNome.getCellData(selected);
+//			cambia colore riga 
+	        
 		} else {
 			venduti.remove(selected);
 			
@@ -195,14 +221,17 @@ public class OttimizzaController {
 		
 		lblCalciatori.setText(""+venduti.size());
 		lblAvv.setText("");
+		}
     }
 
     @FXML
     void doCancella(ActionEvent event) {
-    	txtBudget.clear();
+    	txtBudget.setText("0");;
     	lblAvv.setText("");
     	sldQualita.setValue(0.5);
     	sldTempo.setValue(0.5);
+    	lblBudgetRimasto.setText("");
+    	lblRimasti.setText("");
     	setup();
     	btnCalcola.setDisable(false);
     	txtBudget.setEditable(true);
@@ -215,6 +244,8 @@ public class OttimizzaController {
         assert lblNum != null : "fx:id=\"lblNum\" was not injected: check your FXML file 'Ottimizza.fxml'.";
         assert lblEta != null : "fx:id=\"lblEta\" was not injected: check your FXML file 'Ottimizza.fxml'.";
         assert lblValore != null : "fx:id=\"lblValore\" was not injected: check your FXML file 'Ottimizza.fxml'.";
+        assert lblBudgetRimasto != null : "fx:id=\"lblBudgetRimasto\" was not injected: check your FXML file 'Ottimizza.fxml'.";
+        assert lblRimasti != null : "fx:id=\"lblRimasti\" was not injected: check your FXML file 'Ottimizza.fxml'.";
         assert grafico != null : "fx:id=\"grafico\" was not injected: check your FXML file 'Ottimizza.fxml'.";
         assert asseX != null : "fx:id=\"asseX\" was not injected: check your FXML file 'Ottimizza.fxml'.";
         assert asseY != null : "fx:id=\"asseY\" was not injected: check your FXML file 'Ottimizza.fxml'.";
@@ -231,12 +262,15 @@ public class OttimizzaController {
         assert sldQualita != null : "fx:id=\"sldQualita\" was not injected: check your FXML file 'Ottimizza.fxml'.";
         assert lblCalciatori != null : "fx:id=\"lblCalciatori\" was not injected: check your FXML file 'Ottimizza.fxml'.";
         assert lblAvv != null : "fx:id=\"lblErr\" was not injected: check your FXML file 'Ottimizza.fxml'.";
-
+        assert ball != null : "fx:id=\"ball\" was not injected: check your FXML file 'Ottimizza.fxml'.";
+        
         colNome.setCellValueFactory(new PropertyValueFactory<>("nome"));
         colAnni.setCellValueFactory(new PropertyValueFactory<>("anni"));
         colNaz.setCellValueFactory(new PropertyValueFactory<>("nazionalità"));
         colRuolo.setCellValueFactory(new PropertyValueFactory<>("ruolo"));
         colVal.setCellValueFactory(new PropertyValueFactory<>("valore"));
+        
+        defaultSelectionModel = tabella.getSelectionModel();
     }
     
     private XYChart.Data<String, Double> createData(String nome, double valore) {

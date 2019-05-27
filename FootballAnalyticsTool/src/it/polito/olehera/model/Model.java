@@ -9,6 +9,7 @@ import it.polito.olehera.database.SquadraDAO;
 public class Model {
 	
 	private List<Campionato> campionati;
+	private Campionato campionato;
 	private Rosa squadra;
 	private Rosa best;
 	private SquadraDAO sdao;
@@ -25,8 +26,6 @@ public class Model {
 		sdao = new SquadraDAO();
 		campionati = sdao.getCampionati();
 		calciatori = new ArrayList<Calciatore>();
-//		for (Campionato c : campionati)
-			calciatori.addAll(cdao.getCalciatori("Serie A"));
 	}
 	
 	public List<Rosa> getSquadre(Campionato campionato) {
@@ -38,6 +37,15 @@ public class Model {
 	
 	public List<Campionato> getCampionati() {
 		return campionati;
+	}
+	
+	public Campionato getCampionato() {
+		return campionato;
+	}
+	
+	public void setCampionato(Campionato campionato) {
+		this.campionato = campionato;
+		calciatori.addAll(cdao.getCalciatori(campionato.getNome()));
 	}
 
 	public Rosa getSquadraAnalizza() {
@@ -55,8 +63,6 @@ public class Model {
 		this.budget = budget;
 		this.t = t;
 		this.q = q;
-		primoBest = 0.0;
-		secondoBest = 0.0;
 		
 		int somma = 0;
 		for (Calciatore calciatore : venduti)
@@ -106,15 +112,15 @@ public class Model {
 	 *  Vincoli aggiuntivi sul numero massimo di Calciatori
 	 */
 	private boolean controlloMaxCalciatori(Rosa parziale) {
-		if ( parziale.numCalciatori() > 33 )
+		if ( parziale.numCalciatori() > max(30, squadra.numCalciatori()) )
 			return false;
-		if ( parziale.numAttaccanti() > 8 )
+		if ( parziale.numAttaccanti() > max(6, squadra.numAttaccanti()) )
 			return false;
-		if ( parziale.numCentrocampisti() > 11 )
+		if ( parziale.numCentrocampisti() > max(10, squadra.numCentrocampisti()) )
 			return false;
-		if ( parziale.numDifensori() > 11 )
+		if ( parziale.numDifensori() > max(10, squadra.numDifensori()) )
 			return false;
-		if ( parziale.numPortieri() > 4 )
+		if ( parziale.numPortieri() > max(3, squadra.numPortieri()) )
 			return false;
 		
 		return true;
@@ -124,15 +130,15 @@ public class Model {
 	 *  Vincoli aggiuntivi sul numero minimo di Calciatori
 	 */
 	private boolean controlloMinCalciatori(Rosa completa) {
-		if ( completa.numCalciatori() < 25 )
+		if ( completa.numCalciatori() < min(25, squadra.numCalciatori()) )
 			return false;
-		if ( completa.numAttaccanti() < 4 )
+		if ( completa.numAttaccanti() < min(4, squadra.numAttaccanti()) )
 			return false;
-		if ( completa.numCentrocampisti() < 8 )
+		if ( completa.numCentrocampisti() < min(8, squadra.numCentrocampisti()) )
 			return false;
-		if ( completa.numDifensori() < 8 )
+		if ( completa.numDifensori() < min(8, squadra.numDifensori()) )
 			return false;
-		if ( completa.numPortieri() < 3 )
+		if ( completa.numPortieri() < min(3, squadra.numPortieri()) )
 			return false;
 		
 		return true;
@@ -142,6 +148,9 @@ public class Model {
 	 *  Multi-obiettivo da massimizzare
 	 */
 	private boolean migliore(Rosa completa) {
+		if ( best.numCalciatori() < 1 )
+			return true;
+		
 		double primo = (1-t) * completa.mediaOverall() + t * completa.mediaPotenziale();
 		double secondo = (1-q) * completa.mediaTecnica() + q * completa.mediaFisico();
 		
@@ -153,20 +162,38 @@ public class Model {
 	
 	private void filtraCalciatori(Rosa iniziale, int b) {
 		List<Calciatore> rimuovi = new ArrayList<>();
+		boolean flag = true;
 		calciatori.removeAll(squadra.getCalciatori());	
 		
 		double primo = (1-t) * iniziale.mediaOverall() + t * iniziale.mediaPotenziale();
 		double secondo = (1-q) * iniziale.mediaTecnica() + q * iniziale.mediaFisico();
 		
+		if ( iniziale.numPortieri() < 3 )
+			flag = false;
+		
 		for (Calciatore c : calciatori) {
 			double p = (1-t) * c.getOverall() + t * c.getPotential();
 			double s = (1-q) * c.getTecnica() + q * c.getFisico();
-			if ( p < primo || s < secondo || c.getPrezzo() > b || c.getRuolo()=="portiere" )
+			if ( p < primo || s < secondo || c.getPrezzo() > b || (flag == true && c.getRuolo()=="portiere") )
 				rimuovi.add(c); 
 		}
 		
 		calciatori.removeAll(rimuovi);
-		System.out.print("\nCalciatori filtrati: "+calciatori.size()+"\n");
+		System.out.print("\nCalciatori filtrati: "+calciatori.size());
 	}
+	
+	private int max(int a, int b) {
+		if (a > b)
+			return a;
+		else 
+			return b;
+	} 
+	
+	private int min(int a, int b) {
+		if (a < b)
+			return a;
+		else 
+			return b;
+	} 
 
 }

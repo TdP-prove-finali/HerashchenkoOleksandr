@@ -189,6 +189,8 @@ public class AnalizzaController {
         colNaz.setCellValueFactory(new PropertyValueFactory<>("nazionalità"));
         colRuolo.setCellValueFactory(new PropertyValueFactory<>("ruolo"));
         colVal.setCellValueFactory(new PropertyValueFactory<>("valore"));
+        
+        tabella.setSelectionModel(null);
     }
     
     private XYChart.Data<String, Double> createData(String nome, double valore) {
