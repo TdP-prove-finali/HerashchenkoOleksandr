@@ -24,6 +24,9 @@ public class Model {
 		cdao = new CalciatoreDAO();
 		sdao = new SquadraDAO();
 		campionati = sdao.getCampionati();
+		calciatori = new ArrayList<Calciatore>();
+//		for (Campionato c : campionati)
+			calciatori.addAll(cdao.getCalciatori("Serie A"));
 	}
 	
 	public List<Rosa> getSquadre(Campionato campionato) {
@@ -46,16 +49,6 @@ public class Model {
 		squadra.setCalciatori(cdao.getRosa(squadra.getNome()));
 	}
 	
-	public void caricaCalciatori() {
-		calciatori = new ArrayList<Calciatore>();
-		
-		for (Campionato c : campionati)
-			calciatori.addAll(cdao.getCalciatori(c.getNome()));
-		
-		calciatori.removeAll(squadra.getCalciatori());
-		System.out.print("Calciatori caricati: "+calciatori.size()+"\n");
-	}
-	
 	public Rosa calcolaRosaOttimizzata(List<Calciatore> venduti, int budget, double t, double q) {
 		best = new Rosa("best");
 		Rosa parziale = new Rosa(squadra, venduti);
@@ -63,35 +56,33 @@ public class Model {
 		this.t = t;
 		this.q = q;
 		
+		filtraCalciatori();
+		
 		ottimizza(parziale, 0);
 		
 		return best;
 	}
 	
-	private void ottimizza(Rosa parziale, int L) {
+	private void ottimizza(Rosa parziale, int L) { 
 		
-		if ( L > 1 )
-			return ;
-		
-		if ( L == 1 ) {
-			if ( migliore(parziale) ) {
+		if ( L == calciatori.size() ) {
+			if ( controlloMinCalciatori(parziale) && migliore(parziale) ) {
 				best.setCalciatori(parziale.getCalciatori());
-			    primoBest = (1-t) * best.mediaOverall() + t * best.mediaPotenziale();
-			    secondoBest = (1-q) * best.mediaTecnica() + q * best.mediaFisico();
-			}
-			return ; 
+		        primoBest = (1-t) * best.mediaOverall() + t * best.mediaPotenziale();
+		        secondoBest = (1-q) * best.mediaTecnica() + q * best.mediaFisico();
+		    }
+		    return ;
 		}
 		
-		for (Calciatore c : calciatori) {
+		ottimizza(parziale, L+1);
+		
+		
+		parziale.addCalciatore(calciatori.get(L));
 			
-			parziale.addCalciatore(c);
+		if ( controlloBudget(parziale) && controlloMaxCalciatori(parziale) )
+			ottimizza(parziale, L+1);
 			
-			if ( controlloBudget(parziale) && controlloNumeroCalciatori(parziale) )
-				ottimizza(parziale, L+1);
-			
-			parziale.removeCalciatore(c);
-			
-		}
+		parziale.removeCalciatore(calciatori.get(L));
 		
 	}
 	
@@ -106,18 +97,36 @@ public class Model {
 	}
 	
 	/*
-	 *  Vincoli aggiuntivi sul numero di Calciatori
+	 *  Vincoli aggiuntivi sul numero massimo di Calciatori
 	 */
-	private boolean controlloNumeroCalciatori(Rosa parziale) {
-		if ( parziale.numCalciatori() > squadra.numCalciatori() )
+	private boolean controlloMaxCalciatori(Rosa parziale) {
+		if ( parziale.numCalciatori() > 34 )
 			return false;
-		if ( parziale.numAttaccanti() > squadra.numAttaccanti() )
+		if ( parziale.numAttaccanti() > 8 )
 			return false;
-		if ( parziale.numCentrocampisti() > squadra.numCentrocampisti() )
+		if ( parziale.numCentrocampisti() > 11 )
 			return false;
-		if ( parziale.numDifensori() > squadra.numDifensori() )
+		if ( parziale.numDifensori() > 11 )
 			return false;
-		if ( parziale.numPortieri() > squadra.numPortieri() )
+		if ( parziale.numPortieri() > 4 )
+			return false;
+		
+		return true;
+	}
+	
+	/*
+	 *  Vincoli aggiuntivi sul numero minimo di Calciatori
+	 */
+	private boolean controlloMinCalciatori(Rosa completa) {
+		if ( completa.numCalciatori() < 24 )
+			return false;
+		if ( completa.numAttaccanti() < 4 )
+			return false;
+		if ( completa.numCentrocampisti() < 8 )
+			return false;
+		if ( completa.numDifensori() < 8 )
+			return false;
+		if ( completa.numPortieri() < 3 )
 			return false;
 		
 		return true;
@@ -126,17 +135,29 @@ public class Model {
 	/*
 	 *  Multi-obiettivo da massimizzare
 	 */
-	private boolean migliore(Rosa parziale) {
+	private boolean migliore(Rosa completa) {
 		if ( best.numCalciatori() < 1 )
 			return true;
 		
-		double primo = (1-t) * parziale.mediaOverall() + t * parziale.mediaPotenziale();
-		double secondo = (1-q) * parziale.mediaTecnica() + q * parziale.mediaFisico();
+		double primo = (1-t) * completa.mediaOverall() + t * completa.mediaPotenziale();
+		double secondo = (1-q) * completa.mediaTecnica() + q * completa.mediaFisico();
 		
 		if ( primo >= primoBest && secondo >= secondoBest  )
 			return true;
 		else 
 			return false;
+	}
+	
+	private void filtraCalciatori() {
+		List<Calciatore> rimuovi = new ArrayList<>();
+		calciatori.removeAll(squadra.getCalciatori());	
+		
+//		for (Calciatore c : calciatori)
+//			if ( c.getPrezzo() >  )
+//				rimuovi.add(c);
+		
+		calciatori.removeAll(rimuovi);
+		System.out.print("Calciatori filtrati: "+calciatori.size()+"\n");
 	}
 
 }

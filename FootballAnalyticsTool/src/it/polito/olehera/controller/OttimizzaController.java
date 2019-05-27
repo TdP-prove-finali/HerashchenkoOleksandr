@@ -43,7 +43,6 @@ public class OttimizzaController {
 	public void setModel(Model model) {
 		this.model = model;
 		setup();
-		model.caricaCalciatori();
 	}
 
     @FXML
@@ -107,7 +106,7 @@ public class OttimizzaController {
     private Label lblCalciatori;
 
     @FXML
-    private Label lblErr;
+    private Label lblAvv;
     
     private void setup() {
     	Rosa scelta = model.getSquadraAnalizza();
@@ -132,7 +131,7 @@ public class OttimizzaController {
     	statistiche.getData().add(createData("Tecnica", scelta.mediaTecnica()));
     	
     	grafico.getData().add(statistiche);
-    	lblErr.setText("Seleziona i calciatori da vendere facendo Click sulla riga");
+    	lblAvv.setText("Click sulla riga del calciatore per selezionarlo, un'altro Click per deselezionarlo");
     	venduti = new ArrayList<>();
     	lblCalciatori.setText(""+0);
     }
@@ -144,7 +143,7 @@ public class OttimizzaController {
     	try {
     	      budget = Integer.parseInt(txtBudget.getText().trim());
     	} catch(NumberFormatException nfe) {
-    	      lblErr.setText("Devi inserire un numero intero come Budget!");
+    	      lblAvv.setText("Devi inserire un numero intero come Budget!");
     	      txtBudget.clear();
     	      return ;
     	}
@@ -152,7 +151,7 @@ public class OttimizzaController {
     	double t = sldTempo.getValue();
     	double q = sldQualita.getValue();
     	
-    	lblErr.setText("");
+    	lblAvv.setText("");
     	
     	Rosa ottimizzata = model.calcolaRosaOttimizzata(venduti, budget, t, q);
     	
@@ -193,16 +192,17 @@ public class OttimizzaController {
 //			currentRow.setStyle("-fx-background-color:lightgreen");
 		} else {
 			venduti.remove(selected);
+			
 		}
 		
 		lblCalciatori.setText(""+venduti.size());
-		lblErr.setText("");
+		lblAvv.setText("");
     }
 
     @FXML
     void doCancella(ActionEvent event) {
     	txtBudget.clear();
-    	lblErr.setText("");
+    	lblAvv.setText("");
     	sldQualita.setValue(0.5);
     	sldTempo.setValue(0.5);
     	setup();
@@ -232,7 +232,7 @@ public class OttimizzaController {
         assert sldTempo != null : "fx:id=\"sldTempo\" was not injected: check your FXML file 'Ottimizza.fxml'.";
         assert sldQualita != null : "fx:id=\"sldQualita\" was not injected: check your FXML file 'Ottimizza.fxml'.";
         assert lblCalciatori != null : "fx:id=\"lblCalciatori\" was not injected: check your FXML file 'Ottimizza.fxml'.";
-        assert lblErr != null : "fx:id=\"lblErr\" was not injected: check your FXML file 'Ottimizza.fxml'.";
+        assert lblAvv != null : "fx:id=\"lblErr\" was not injected: check your FXML file 'Ottimizza.fxml'.";
 
         colNome.setCellValueFactory(new PropertyValueFactory<>("nome"));
         colAnni.setCellValueFactory(new PropertyValueFactory<>("anni"));

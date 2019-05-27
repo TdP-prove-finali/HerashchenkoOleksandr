@@ -92,13 +92,13 @@ public class HomeController {
      	cbxClub.getItems().addAll(model.getSquadre(scelto));
      	
      	if (scelto.toString().compareTo("Bundesliga")==0)
-     		file = new File("img/Bundesliga.jpg");
+     		file = new File("img/Bundesliga.png");
      	else if (scelto.toString().compareTo("La Liga")==0)
-     		file = new File("img/LaLiga.jpg");
+     		file = new File("img/LaLiga.png");
      	else if (scelto.toString().compareTo("Serie A")==0)
-     		file = new File("img/SerieA.jpg");
+     		file = new File("img/SerieA.png");
      	else if (scelto.toString().compareTo("Premier League")==0)
-     		file = new File("img/PremierLeague.jpg");
+     		file = new File("img/PremierLeague.png");
      		
      	logo.setImage(new Image(file.toURI().toString()));
     }
