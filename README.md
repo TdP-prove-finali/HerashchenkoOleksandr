@@ -1,6 +1,7 @@
-# Football Analytics Tool
+# Football Analytics Tool - Software per Società Calcistica
 
-
+L'applicazione si presenta utile per fare analisi di calcio-mercato. In particolare, scelta una squadra è possibile visualizzare varie statistiche sulla rosa funzionali agli obiettivi da migliorare sul mercato. 
+Dato il budget disponibile e gli eventuali calciatori ceduti, si può scegliere con quale rilevanza si vogliono massimizzare le diverse statistiche ed il programma presenta un'ipotetica rosa con i nuovi calciatori. 
 
 
 
