@@ -33,7 +33,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TableView.TableViewSelectionModel;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 
@@ -106,9 +105,6 @@ public class OttimizzaController {
     private TextField txtBudget;
     
     @FXML
-    private ImageView ball;
-    
-    @FXML
     private Slider sldTempo;
 
     @FXML
@@ -151,21 +147,35 @@ public class OttimizzaController {
 
 	@FXML
     void doCalcolaRosaOttimizzata(ActionEvent event) {
-    	int budget = 0;
+		long start = System.nanoTime();
+		
+    	float budget = 0;
+    	String inserito = txtBudget.getText().trim();
     	try {
-    	      budget = Integer.parseInt(txtBudget.getText().trim());
+    	      budget = Integer.parseInt(inserito.substring(0, inserito.length()-1));
     	} catch(NumberFormatException nfe) {
-    	      lblAvv.setText("Devi inserire un numero intero come Budget!");
+    	      lblAvv.setText("Devi inserire un numero seguito senza spazi da M o K");
     	      txtBudget.clear();
     	      return ;
     	}
+    	
+    	char ch = inserito.charAt(inserito.length()-1);
+		if (ch == 'M')
+			budget *= 1000000;
+		else if (ch == 'K') 
+			budget *= 1000;
+		else {
+			lblAvv.setText("Devi inserire un numero seguito senza spazi da M o K");
+  	        txtBudget.clear();
+  	        return ;
+		}
     	
     	double t = sldTempo.getValue();
     	double q = sldQualita.getValue();
     	
     	lblAvv.setText("");
     	
-    	Rosa ottimizzata = model.calcolaRosaOttimizzata(venduti, budget, t, q);
+    	Rosa ottimizzata = model.calcolaRosaOttimizzata(venduti, (int)budget, t, q);
     	
     	List<Calciatore> nuovi = new ArrayList<>();
     	for (Calciatore c : ottimizzata.getCalciatori())
@@ -202,6 +212,9 @@ public class OttimizzaController {
     	sldQualita.setDisable(true);
     	sldTempo.setDisable(true);
     	tabella.setSelectionModel(null);
+    	
+    	long stop = System.nanoTime();
+    	lblAvv.setText("Tempo impiegato: "+(stop-start)/1e9+" secondi");
     }
 	
 	@FXML
@@ -226,7 +239,7 @@ public class OttimizzaController {
 
     @FXML
     void doCancella(ActionEvent event) {
-    	txtBudget.setText("0");;
+    	txtBudget.setText("0M");;
     	lblAvv.setText("");
     	sldQualita.setValue(0.5);
     	sldTempo.setValue(0.5);
@@ -262,7 +275,6 @@ public class OttimizzaController {
         assert sldQualita != null : "fx:id=\"sldQualita\" was not injected: check your FXML file 'Ottimizza.fxml'.";
         assert lblCalciatori != null : "fx:id=\"lblCalciatori\" was not injected: check your FXML file 'Ottimizza.fxml'.";
         assert lblAvv != null : "fx:id=\"lblErr\" was not injected: check your FXML file 'Ottimizza.fxml'.";
-        assert ball != null : "fx:id=\"ball\" was not injected: check your FXML file 'Ottimizza.fxml'.";
         
         colNome.setCellValueFactory(new PropertyValueFactory<>("nome"));
         colAnni.setCellValueFactory(new PropertyValueFactory<>("anni"));
