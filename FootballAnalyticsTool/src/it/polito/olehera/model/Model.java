@@ -60,6 +60,7 @@ public class Model {
 	public Rosa calcolaRosaOttimizzata(List<Calciatore> venduti, int budget, double t, double q) {
 		best = new Rosa("best");
 		Rosa parziale = new Rosa(squadra, venduti);
+		best.setCalciatori(new ArrayList<>(parziale.getCalciatori()));
 		this.budget = budget;
 		this.t = t;
 		this.q = q;
@@ -79,7 +80,7 @@ public class Model {
 		
 		if ( L == calciatori.size() ) {
 			if ( controlloMinCalciatori(parziale) && migliore(parziale) ) {
-				best.setCalciatori(new ArrayList<>(parziale.getCalciatori()));;
+				best.setCalciatori(new ArrayList<>(parziale.getCalciatori()));
 		        primoBest = (1-t) * best.mediaOverall() + t * best.mediaPotenziale();
 		        secondoBest = (1-q) * best.mediaTecnica() + q * best.mediaFisico();
 		    }
@@ -162,19 +163,32 @@ public class Model {
 	
 	private void filtraCalciatori(Rosa iniziale, int b) {
 		List<Calciatore> rimuovi = new ArrayList<>();
-		boolean flag = true;
 		calciatori.removeAll(squadra.getCalciatori());	
 		
 		double primo = (1-t) * iniziale.mediaOverall() + t * iniziale.mediaPotenziale();
 		double secondo = (1-q) * iniziale.mediaTecnica() + q * iniziale.mediaFisico();
 		
+		boolean por = true;
 		if ( iniziale.numPortieri() < 3 )
-			flag = false;
+			por = false;
+		
+		boolean dif = false;
+		if ( iniziale.numDifensori() > 10 )
+			dif = true;
+		
+		boolean att = false;
+		if ( iniziale.numAttaccanti() > 10 )
+			att = true;
+		
+		boolean cen = false;
+		if ( iniziale.numCentrocampisti() > 6 )
+			cen = true;
 		
 		for (Calciatore c : calciatori) {
 			double p = (1-t) * c.getOverall() + t * c.getPotential();
 			double s = (1-q) * c.getTecnica() + q * c.getFisico();
-			if ( p < primo || s < secondo || c.getPrezzo() > b || (flag == true && c.getRuolo()=="portiere") )
+			if ( p < primo || s < secondo || c.getPrezzo() > b || (cen && c.getRuolo()=="centrocampista")
+				|| (dif && c.getRuolo()=="difensore") || (att && c.getRuolo()=="attaccante") || (por && c.getRuolo()=="portiere") )
 				rimuovi.add(c); 
 		}
 		

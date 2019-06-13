@@ -41,6 +41,7 @@ public class OttimizzaController {
 	private Model model;
 	private List<Calciatore> venduti;
 	private TableViewSelectionModel<Calciatore> defaultSelectionModel;
+	private NumberFormat nf = NumberFormat.getInstance(Locale.ITALIAN);
 	
 	public void setModel(Model model) {
 		this.model = model;
@@ -123,7 +124,6 @@ public class OttimizzaController {
     	
     	lblNum.setText(""+scelta.numCalciatori());
     	
-    	NumberFormat nf = NumberFormat.getInstance(Locale.ITALIAN);
     	lblValore.setText(nf.format(scelta.valoreTot())+" €");
     	
     	ObservableList<Calciatore> values = FXCollections.observableArrayList(scelta.getCalciatori());
@@ -169,6 +169,20 @@ public class OttimizzaController {
   	        txtBudget.clear();
   	        return ;
 		}
+		
+		int budgetMassimo = (int) (model.getSquadraAnalizza().valoreTot()*0.15);
+		if ( budget > budgetMassimo ) {
+			lblAvv.setText("Budget massimo: "+nf.format(budgetMassimo)+" €  (15% del valore totale della Rosa)");
+  	        txtBudget.clear();
+  	        return ;
+		}
+		
+		int vendutiMax = (int) (model.getSquadraAnalizza().numCalciatori()/4);
+		if ( venduti.size() > vendutiMax ) {
+			lblAvv.setText("Puoi cedere al massimo "+vendutiMax+" giocatori  (1/4 del numero totale di giocatori della Rosa)");
+  	        venduti.clear();
+  	        return ;
+		}
     	
     	double t = sldTempo.getValue();
     	double q = sldQualita.getValue();
@@ -182,11 +196,14 @@ public class OttimizzaController {
     		if (!model.getSquadraAnalizza().getCalciatori().contains(c))
     			nuovi.add(c);
     	
+    	if ( nuovi.size() == 0 ) {
+    		lblAvv.setText("Con questi parametri la migliore Rosa è quella attuale!");
+    	}
+    	
     	// colora righe dei nuovi calciatori
     	
-    	lblNum.setText(""+ottimizzata.numCalciatori());
+    	lblNum.setText(""+ottimizzata.numCalciatori()+"  ("+nuovi.size()+")");
     	
-    	NumberFormat nf = NumberFormat.getInstance(Locale.ITALIAN);
     	lblValore.setText(nf.format(ottimizzata.valoreTot())+" €");
     	
     	ObservableList<Calciatore> values = FXCollections.observableArrayList();
