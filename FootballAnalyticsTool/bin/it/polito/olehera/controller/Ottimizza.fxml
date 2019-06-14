@@ -95,11 +95,11 @@
    <left>
       <TableView fx:id="tabella" onMouseClicked="#doAggiungi" prefHeight="471.0" prefWidth="390.0" BorderPane.alignment="CENTER">
         <columns>
-          <TableColumn fx:id="colNome" prefWidth="102.0" text="Nome" />
-          <TableColumn fx:id="colAnni" prefWidth="34.0" text="Anni" />
-            <TableColumn fx:id="colNaz" prefWidth="100.0" text="Nazionalità" />
-            <TableColumn fx:id="colRuolo" prefWidth="92.0" text="Ruolo" />
-            <TableColumn fx:id="colVal" prefWidth="46.0" text="Valore" />
+          <TableColumn fx:id="colNome" editable="false" prefWidth="102.0" sortable="false" text="Nome" />
+          <TableColumn fx:id="colAnni" editable="false" prefWidth="34.0" sortable="false" text="Anni" />
+            <TableColumn fx:id="colNaz" editable="false" prefWidth="100.0" sortable="false" text="Nazionalità" />
+            <TableColumn fx:id="colRuolo" editable="false" prefWidth="92.0" sortable="false" text="Ruolo" />
+            <TableColumn fx:id="colVal" editable="false" prefWidth="46.0" sortable="false" text="Valore" />
         </columns>
          <BorderPane.margin>
             <Insets bottom="10.0" left="10.0" />

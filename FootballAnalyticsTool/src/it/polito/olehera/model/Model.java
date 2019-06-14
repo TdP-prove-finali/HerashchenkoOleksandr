@@ -193,7 +193,6 @@ public class Model {
 		}
 		
 		calciatori.removeAll(rimuovi);
-		System.out.print("\nCalciatori filtrati: "+calciatori.size());
 	}
 	
 	private int max(int a, int b) {

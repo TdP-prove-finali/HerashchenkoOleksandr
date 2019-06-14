@@ -72,6 +72,7 @@ public class HomeController {
     		FXMLLoader loader = new FXMLLoader(getClass().getResource("Analizza.fxml"));
 			BorderPane root = (BorderPane) loader.load();
 			Scene scene = new Scene(root);
+			scene.getStylesheets().add(getClass().getResource("FATool.css").toExternalForm());
 			
 			AnalizzaController controller = loader.getController();
  			controller.setModel(model, stage);

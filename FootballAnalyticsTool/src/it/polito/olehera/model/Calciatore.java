@@ -1,15 +1,18 @@
 package it.polito.olehera.model;
 
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+
 public class Calciatore implements Comparable<Calciatore>{
 	
 	private int id;
-	private String nome;
-	private int anni;
-	private String nazionalità;
+	private final SimpleStringProperty nome;
+	private final SimpleIntegerProperty anni;
+	private final SimpleStringProperty nazionalità;
 	private int overall;
 	private int potential;
 	private Rosa club;
-	private String valore;
+	private final SimpleStringProperty valore;
 	private String posizione;
 	private int cross;
 	private int dribbling;
@@ -19,19 +22,19 @@ public class Calciatore implements Comparable<Calciatore>{
 	private int agilità;
 	private int reazione;
 	private int tiro;
-	private String ruolo;
+	private SimpleStringProperty ruolo;
 	
 	public Calciatore(int id, String nome, int anni, String nazionalità, int overall, int potential, Rosa club,
 			          String valore, String posizione, int cross, int dribbling, int controllo, int accelerazione, 
 			          int velocità, int agilità, int reazione, int tiro) {
 		this.id = id;
-		this.nome = nome;
-		this.anni = anni;
-		this.nazionalità = nazionalità;
+		this.nome = new SimpleStringProperty(nome);
+		this.anni = new SimpleIntegerProperty(anni);
+		this.nazionalità = new SimpleStringProperty(nazionalità);
 		this.overall = overall;
 		this.potential = potential;
 		this.club = club;
-		this.valore = valore;
+		this.valore = new SimpleStringProperty(valore);
 		this.posizione = posizione;
 		this.cross = cross;
 		this.dribbling = dribbling;
@@ -49,15 +52,15 @@ public class Calciatore implements Comparable<Calciatore>{
 	}
 
 	public String getNome() {
-		return nome;
+		return nome.get();
 	}
 
 	public int getAnni() {
-		return anni;
+		return anni.get();
 	}
 
 	public String getNazionalità() {
-		return nazionalità;
+		return nazionalità.get();
 	}
 
 	public int getOverall() {
@@ -73,7 +76,7 @@ public class Calciatore implements Comparable<Calciatore>{
 	}
 
 	public String getValore() {
-		return valore;
+		return valore.get();
 	}
 
 	public String getPosizione() {
@@ -116,12 +119,12 @@ public class Calciatore implements Comparable<Calciatore>{
 		float prezzo;
 		
 		try {
-		      prezzo = Float.parseFloat(valore.substring(0, valore.length()-1));
+		      prezzo = Float.parseFloat(getValore().substring(0, getValore().length()-1));
 		} catch(NumberFormatException nfe) {
 		      return 0;
 		}
 
-		char c = valore.charAt(valore.length()-1);
+		char c = getValore().charAt(getValore().length()-1);
 		if (c == 'M')
 			prezzo *= 1000000;
 		else if (c == 'K') 
@@ -132,38 +135,38 @@ public class Calciatore implements Comparable<Calciatore>{
 	
 	public void setRuolo() {
 		switch (posizione.trim()) {
-		case "GK": ruolo = "portiere"; break;
-		case "RB": ruolo = "difensore"; break;
-		case "CB": ruolo = "difensore"; break;
-		case "LCB": ruolo = "difensore"; break;
-		case "RCB": ruolo = "difensore"; break;
-		case "LB": ruolo = "difensore"; break;
-		case "RWB": ruolo = "difensore"; break;
-		case "LWB": ruolo = "difensore"; break;
-		case "CDM": ruolo = "centrocampista"; break;
-		case "LDM": ruolo = "centrocampista"; break;
-		case "RDM": ruolo = "centrocampista"; break;
-		case "CM": ruolo = "centrocampista"; break;
-		case "CAM": ruolo = "centrocampista"; break;
-		case "RAM": ruolo = "centrocampista"; break;
-		case "LAM": ruolo = "centrocampista"; break;
-		case "LCM": ruolo = "centrocampista"; break;
-		case "RCM": ruolo = "centrocampista"; break;
-		case "RM": ruolo = "centrocampista"; break;
-		case "LM": ruolo = "centrocampista"; break;
-		case "RW": ruolo = "attaccante"; break;
-		case "LW": ruolo = "attaccante"; break;
-		case "CF": ruolo = "attaccante"; break;
-		case "RF": ruolo = "attaccante"; break;
-		case "LF": ruolo = "attaccante"; break;
-		case "LS": ruolo = "attaccante"; break;
-		case "RS": ruolo = "attaccante"; break;
-		case "ST": ruolo = "attaccante"; break;
+		case "GK": ruolo = new SimpleStringProperty("portiere"); break;
+		case "RB": ruolo = new SimpleStringProperty("difensore"); break;
+		case "CB": ruolo = new SimpleStringProperty("difensore"); break;
+		case "LCB": ruolo = new SimpleStringProperty("difensore"); break;
+		case "RCB": ruolo = new SimpleStringProperty("difensore"); break;
+		case "LB": ruolo = new SimpleStringProperty("difensore"); break;
+		case "RWB": ruolo = new SimpleStringProperty("difensore"); break;
+		case "LWB": ruolo = new SimpleStringProperty("difensore"); break;
+		case "CDM": ruolo = new SimpleStringProperty("centrocampista"); break;
+		case "LDM": ruolo = new SimpleStringProperty("centrocampista"); break;
+		case "RDM": ruolo = new SimpleStringProperty("centrocampista"); break;
+		case "CM": ruolo = new SimpleStringProperty("centrocampista"); break;
+		case "CAM": ruolo = new SimpleStringProperty("centrocampista"); break;
+		case "RAM": ruolo = new SimpleStringProperty("centrocampista"); break;
+		case "LAM": ruolo = new SimpleStringProperty("centrocampista"); break;
+		case "LCM": ruolo = new SimpleStringProperty("centrocampista"); break;
+		case "RCM": ruolo = new SimpleStringProperty("centrocampista"); break;
+		case "RM": ruolo = new SimpleStringProperty("centrocampista"); break;
+		case "LM": ruolo = new SimpleStringProperty("centrocampista"); break;
+		case "RW": ruolo = new SimpleStringProperty("attaccante"); break;
+		case "LW": ruolo = new SimpleStringProperty("attaccante"); break;
+		case "CF": ruolo = new SimpleStringProperty("attaccante"); break;
+		case "RF": ruolo = new SimpleStringProperty("attaccante"); break;
+		case "LF": ruolo = new SimpleStringProperty("attaccante"); break;
+		case "LS": ruolo = new SimpleStringProperty("attaccante"); break;
+		case "RS": ruolo = new SimpleStringProperty("attaccante"); break;
+		case "ST": ruolo = new SimpleStringProperty("attaccante"); break;
 		}
 	}
 	
 	public String getRuolo() {
-		return ruolo;
+		return ruolo.get();
 	}
 	
 	public double getTecnica() {
@@ -198,12 +201,12 @@ public class Calciatore implements Comparable<Calciatore>{
 
 	@Override
 	public String toString() {
-		return nome;
+		return nome.get();
 	}
 
 	@Override
 	public int compareTo(Calciatore o) {
-		return ruolo.compareTo(o.ruolo);
+		return getRuolo().compareTo(o.getRuolo());
 	}
 
 }

@@ -3,6 +3,7 @@ package it.polito.olehera.controller;
 import java.net.URL;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -13,6 +14,7 @@ import it.polito.olehera.model.Rosa;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -29,22 +31,29 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TableView.TableViewSelectionModel;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
+import javafx.util.Callback;
 
 public class OttimizzaController {
 	
 	private Model model;
 	private List<Calciatore> venduti;
 	private TableViewSelectionModel<Calciatore> defaultSelectionModel;
-	private NumberFormat nf = NumberFormat.getInstance(Locale.ITALIAN);
+	private NumberFormat nf;
+	private ObservableList<Integer> righe;
+	private String classe;
 	
 	public void setModel(Model model) {
 		this.model = model;
+		nf = NumberFormat.getInstance(Locale.ITALIAN);
+		righe = FXCollections.observableArrayList();
+		classe = "ceduto";
 		setup();
 	}
 
@@ -141,6 +150,7 @@ public class OttimizzaController {
     	grafico.getData().add(statistiche);
     	lblAvv.setText("Click sulla riga del calciatore per selezionarlo, un'altro Click per deselezionarlo");
     	venduti = new ArrayList<>();
+    	righe.clear();
     	lblCalciatori.setText(""+0);
     	tabella.setSelectionModel(defaultSelectionModel);
     }
@@ -173,7 +183,7 @@ public class OttimizzaController {
 		int budgetMassimo = (int) (model.getSquadraAnalizza().valoreTot()*0.15);
 		if ( budget > budgetMassimo ) {
 			lblAvv.setText("Budget massimo: "+nf.format(budgetMassimo)+" €  (15% del valore totale della Rosa)");
-  	        txtBudget.clear();
+			txtBudget.setText("0M");;
   	        return ;
 		}
 		
@@ -181,6 +191,7 @@ public class OttimizzaController {
 		if ( venduti.size() > vendutiMax ) {
 			lblAvv.setText("Puoi cedere al massimo "+vendutiMax+" giocatori  (1/4 del numero totale di giocatori della Rosa)");
   	        venduti.clear();
+  	        righe.clear();
   	        return ;
 		}
     	
@@ -200,17 +211,23 @@ public class OttimizzaController {
     		lblAvv.setText("Con questi parametri la migliore Rosa è quella attuale!");
     	}
     	
-    	// colora righe dei nuovi calciatori
-    	
     	lblNum.setText(""+ottimizzata.numCalciatori()+"  ("+nuovi.size()+")");
     	
     	lblValore.setText(nf.format(ottimizzata.valoreTot())+" €");
     	
+    	righe.clear();
+    	List<Integer> indici = new ArrayList<>();
     	ObservableList<Calciatore> values = FXCollections.observableArrayList();
-    	for (Calciatore c : ottimizzata.getCalciatori())
+    	for (int i=0; i<ottimizzata.getCalciatori().size(); i++) {
+    		Calciatore c = ottimizzata.getCalciatori().get(i);
     		values.add(c);
+    		if ( nuovi.contains(c) )
+    			indici.add(i);
+    	}
     	
     	tabella.setItems(values);
+    	classe = "nuovo";
+    	righe.setAll(indici);
     	
     	XYChart.Series<String, Double> statistiche = new XYChart.Series<String, Double>();
     	
@@ -237,26 +254,28 @@ public class OttimizzaController {
 	@FXML
     void doAggiungi(MouseEvent event) {
 		if ( tabella.getSelectionModel() != null ) {
+			
 		Calciatore selected = tabella.getSelectionModel().getSelectedItem();
+		Integer index = tabella.getSelectionModel().getSelectedIndex();
 		
 		if ( !venduti.contains(selected) ) {
 			venduti.add(selected);
-			colNome.getCellData(selected);
-//			cambia colore riga 
-	        
+			righe.add(index);
 		} else {
 			venduti.remove(selected);
-			
+			if ( righe.contains(index) )
+				righe.remove(index);
 		}
 		
 		lblCalciatori.setText(""+venduti.size());
 		lblAvv.setText("");
+		
 		}
     }
 
     @FXML
     void doCancella(ActionEvent event) {
-    	txtBudget.setText("0M");;
+    	txtBudget.setText("0M");
     	lblAvv.setText("");
     	sldQualita.setValue(0.5);
     	sldTempo.setValue(0.5);
@@ -267,6 +286,8 @@ public class OttimizzaController {
     	txtBudget.setEditable(true);
     	sldQualita.setDisable(false);
     	sldTempo.setDisable(false);
+    	righe.clear();
+    	classe = "ceduto";
     }
 
     @FXML
@@ -293,13 +314,45 @@ public class OttimizzaController {
         assert lblCalciatori != null : "fx:id=\"lblCalciatori\" was not injected: check your FXML file 'Ottimizza.fxml'.";
         assert lblAvv != null : "fx:id=\"lblErr\" was not injected: check your FXML file 'Ottimizza.fxml'.";
         
-        colNome.setCellValueFactory(new PropertyValueFactory<>("nome"));
-        colAnni.setCellValueFactory(new PropertyValueFactory<>("anni"));
-        colNaz.setCellValueFactory(new PropertyValueFactory<>("nazionalità"));
-        colRuolo.setCellValueFactory(new PropertyValueFactory<>("ruolo"));
-        colVal.setCellValueFactory(new PropertyValueFactory<>("valore"));
+        colNome.setCellValueFactory(new PropertyValueFactory<Calciatore, String>("nome"));
+        colAnni.setCellValueFactory(new PropertyValueFactory<Calciatore, Integer>("anni"));
+        colNaz.setCellValueFactory(new PropertyValueFactory<Calciatore, String>("nazionalità"));
+        colRuolo.setCellValueFactory(new PropertyValueFactory<Calciatore, String>("ruolo"));
+        colVal.setCellValueFactory(new PropertyValueFactory<Calciatore, String>("valore"));
         
         defaultSelectionModel = tabella.getSelectionModel();
+        
+        tabella.setRowFactory(new Callback<TableView<Calciatore>, TableRow<Calciatore>>() {
+            @Override
+            public TableRow<Calciatore> call(TableView<Calciatore> tableView) {
+                final TableRow<Calciatore> row = new TableRow<Calciatore>() {
+                    @Override
+                    protected void updateItem(Calciatore item, boolean empty){
+                        super.updateItem(item, empty);
+                        if (righe.contains(getIndex())) {
+                            if ( !getStyleClass().contains(classe) ) {
+                                getStyleClass().add(classe);
+                            }
+                        } else {
+                            getStyleClass().removeAll(Collections.singleton(classe));
+                        }
+                    }
+                };
+                righe.addListener(new ListChangeListener<Integer>() {
+                    @Override
+                    public void onChanged(Change<? extends Integer> change) {
+                        if (righe.contains(row.getIndex())) {
+                            if ( !row.getStyleClass().contains(classe) ) {
+                                row.getStyleClass().add(classe);
+                            }
+                        } else {
+                            row.getStyleClass().removeAll(Collections.singleton(classe));
+                        }
+                    }
+                });
+                return row;
+            }
+        });
     }
     
     private XYChart.Data<String, Double> createData(String nome, double valore) {

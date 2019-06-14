@@ -129,6 +129,7 @@ public class AnalizzaController {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("Home.fxml"));
 			BorderPane root = (BorderPane) loader.load();
 			Scene scene = new Scene(root);
+			scene.getStylesheets().add(getClass().getResource("FATool.css").toExternalForm());
 			
 			HomeController controller = loader.getController();
 			Model m = new Model();
@@ -151,6 +152,8 @@ public class AnalizzaController {
     		FXMLLoader loader = new FXMLLoader(getClass().getResource("Ottimizza.fxml"));
 			BorderPane root = (BorderPane) loader.load();
 			Scene scene = new Scene(root);
+			scene.getStylesheets().add(getClass().getResource("FATool.css").toExternalForm());
+
 			
 			OttimizzaController controller = loader.getController();
 			Stage s = new Stage();
@@ -184,11 +187,11 @@ public class AnalizzaController {
         assert colRuolo != null : "fx:id=\"colRuolo\" was not injected: check your FXML file 'Analizza.fxml'.";
         assert colVal != null : "fx:id=\"colVal\" was not injected: check your FXML file 'Analizza.fxml'.";
         
-        colNome.setCellValueFactory(new PropertyValueFactory<>("nome"));
-        colAnni.setCellValueFactory(new PropertyValueFactory<>("anni"));
-        colNaz.setCellValueFactory(new PropertyValueFactory<>("nazionalità"));
-        colRuolo.setCellValueFactory(new PropertyValueFactory<>("ruolo"));
-        colVal.setCellValueFactory(new PropertyValueFactory<>("valore"));
+        colNome.setCellValueFactory(new PropertyValueFactory<Calciatore, String>("nome"));
+        colAnni.setCellValueFactory(new PropertyValueFactory<Calciatore, Integer>("anni"));
+        colNaz.setCellValueFactory(new PropertyValueFactory<Calciatore, String>("nazionalità"));
+        colRuolo.setCellValueFactory(new PropertyValueFactory<Calciatore, String>("ruolo"));
+        colVal.setCellValueFactory(new PropertyValueFactory<Calciatore, String>("valore"));
         
         tabella.setSelectionModel(null);
     }
