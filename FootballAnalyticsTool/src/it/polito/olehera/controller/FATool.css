@@ -5,3 +5,65 @@
 .nuovo {
 	-fx-background-color: #00FF7F;
 } 
+
+.bottone {
+    -fx-background-color: lightgray;
+    -fx-background-radius: 15;
+}
+
+.bottone:hover {
+    -fx-background-color: silver;
+}
+
+.combo {
+	-fx-background-color: lightgray;
+	-fx-font-weight: bold;
+	-fx-background-radius: 10;
+}
+
+.combo:hover {
+    -fx-background-color: silver;
+}
+
+.table-view {
+   -fx-background-color: lightgray;
+}
+
+.table-view .filler {
+   -fx-background-color: lightgray;
+}
+
+.table-view .table-cell {
+    -fx-border-color: transparent;
+}
+
+.table-column {
+	-fx-alignment: center;
+}
+
+.table-view .column-header {
+    -fx-background-color: lightgray;
+}
+
+.chart-plot-background {
+    -fx-background-color: transparent;
+}
+
+.default-color0.chart-bar { 
+	-fx-bar-fill: red;
+}
+.default-color1.chart-bar { 
+	-fx-bar-fill: #00FF7F;
+}
+
+.slider .thumb {
+    -fx-background-image: url("palla.png"); 
+    -fx-background-size: 20;
+    -fx-pref-height: 20;
+    -fx-pref-width: 20;
+    -fx-background-color: white;
+}
+
+.track {
+    -fx-background-color: lightgray;
+}

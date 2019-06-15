@@ -248,7 +248,7 @@ public class OttimizzaController {
     	tabella.setSelectionModel(null);
     	
     	long stop = System.nanoTime();
-    	lblAvv.setText("Tempo impiegato: "+(stop-start)/1e9+" secondi");
+//    	lblAvv.setText("Tempo impiegato: "+(stop-start)/1e9+" secondi");
     }
 	
 	@FXML

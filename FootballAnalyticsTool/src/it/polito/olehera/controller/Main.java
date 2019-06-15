@@ -17,6 +17,7 @@ public class Main extends Application {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("Home.fxml"));
 			BorderPane root = (BorderPane) loader.load();
 			Scene scene = new Scene(root);
+			scene.getStylesheets().add(getClass().getResource("FATool.css").toExternalForm());
 			
 			HomeController controller = loader.getController();
 			Model model = new Model();

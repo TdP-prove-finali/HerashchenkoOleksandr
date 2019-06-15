@@ -70,7 +70,7 @@
             </HBox>
             <HBox alignment="CENTER_LEFT" prefHeight="317.0" prefWidth="297.0">
                <children>
-                  <BarChart fx:id="grafico" barGap="6.0" legendVisible="false" prefHeight="317.0" prefWidth="309.0">
+                  <BarChart fx:id="grafico" barGap="6.0" legendVisible="false" prefHeight="317.0" prefWidth="309.0" verticalGridLinesVisible="false">
                     <xAxis>
                       <CategoryAxis fx:id="asseX" prefHeight="13.0" prefWidth="248.0" side="BOTTOM">
                            <tickLabelFont>
@@ -120,12 +120,12 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <Button fx:id="btnCalcola" mnemonicParsing="false" onAction="#doCalcolaRosaOttimizzata" prefHeight="25.0" prefWidth="81.0" text="Calcola" GridPane.columnIndex="2">
+                  <Button fx:id="btnCalcola" mnemonicParsing="false" onAction="#doCalcolaRosaOttimizzata" prefHeight="25.0" prefWidth="81.0" styleClass="bottone" text="Calcola" GridPane.columnIndex="2">
                      <font>
                         <Font name="System Bold" size="12.0" />
                      </font>
                   </Button>
-                  <Button fx:id="btnCancella" cancelButton="true" mnemonicParsing="false" onAction="#doCancella" prefHeight="25.0" prefWidth="81.0" text="Cancella" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                  <Button fx:id="btnCancella" cancelButton="true" mnemonicParsing="false" onAction="#doCancella" prefHeight="25.0" prefWidth="81.0" styleClass="bottone" text="Cancella" GridPane.columnIndex="2" GridPane.rowIndex="1">
                      <font>
                         <Font name="System Bold" size="12.0" />
                      </font>

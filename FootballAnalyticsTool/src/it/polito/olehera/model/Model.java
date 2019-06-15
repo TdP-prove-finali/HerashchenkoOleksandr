@@ -187,12 +187,13 @@ public class Model {
 		for (Calciatore c : calciatori) {
 			double p = (1-t) * c.getOverall() + t * c.getPotential();
 			double s = (1-q) * c.getTecnica() + q * c.getFisico();
-			if ( p < primo || s < secondo || c.getPrezzo() > b || (cen && c.getRuolo()=="centrocampista")
+			if ( (p < primo || s < secondo) || c.getPrezzo() > b || (cen && c.getRuolo()=="centrocampista")
 				|| (dif && c.getRuolo()=="difensore") || (att && c.getRuolo()=="attaccante") || (por && c.getRuolo()=="portiere") )
 				rimuovi.add(c); 
 		}
 		
 		calciatori.removeAll(rimuovi);
+//		System.out.println("\nfiltrati: "+calciatori.size());
 	}
 	
 	private int max(int a, int b) {

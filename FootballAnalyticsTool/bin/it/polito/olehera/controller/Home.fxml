@@ -39,8 +39,8 @@
             </HBox>
             <HBox alignment="CENTER" prefHeight="62.0" prefWidth="509.0">
                <children>
-                  <ComboBox fx:id="cbxCampionato" onAction="#doCaricaSquadre" prefHeight="25.0" prefWidth="167.0" />
-                  <ComboBox fx:id="cbxClub" prefHeight="25.0" prefWidth="169.0" visibleRowCount="20">
+                  <ComboBox fx:id="cbxCampionato" onAction="#doCaricaSquadre" prefHeight="25.0" prefWidth="167.0" styleClass="combo" />
+                  <ComboBox fx:id="cbxClub" prefHeight="25.0" prefWidth="169.0" styleClass="combo" visibleRowCount="20">
                      <HBox.margin>
                         <Insets left="50.0" />
                      </HBox.margin>
@@ -62,7 +62,7 @@
             </Separator>
             <HBox alignment="CENTER_RIGHT" prefHeight="75.0" prefWidth="509.0">
                <children>
-                  <Button fx:id="btnAnalizza" mnemonicParsing="false" onAction="#doAnalisi" prefHeight="29.0" prefWidth="99.0" text="Analizza">
+                  <Button fx:id="btnAnalizza" mnemonicParsing="false" onAction="#doAnalisi" prefHeight="29.0" prefWidth="99.0" styleClass="bottone" text="Analizza">
                      <font>
                         <Font name="System Bold" size="13.0" />
                      </font>
