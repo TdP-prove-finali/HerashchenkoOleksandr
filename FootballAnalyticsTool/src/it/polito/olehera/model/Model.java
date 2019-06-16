@@ -61,7 +61,7 @@ public class Model {
 		Rosa parziale = new Rosa(squadra, venduti);
 		best.setCalciatori(new ArrayList<>(parziale.getCalciatori()));
 		primoBest = (1-t) * best.mediaOverall() + t * best.mediaPotenziale();
-        secondoBest = (1-q) * best.mediaTecnica() + q * best.mediaFisico();
+		secondoBest = (1-q) * best.mediaTecnica() + q * best.mediaFisico();
 		this.budget = budget;
 		this.t = t;
 		this.q = q;
@@ -82,8 +82,8 @@ public class Model {
 		if ( L == calciatori.size() ) {
 			if ( controlloMinCalciatori(parziale) && migliore(parziale) ) {
 				best.setCalciatori(new ArrayList<>(parziale.getCalciatori()));
-		        primoBest = (1-t) * best.mediaOverall() + t * best.mediaPotenziale();
-		        secondoBest = (1-q) * best.mediaTecnica() + q * best.mediaFisico();
+				primoBest = (1-t) * best.mediaOverall() + t * best.mediaPotenziale();
+				secondoBest = (1-q) * best.mediaTecnica() + q * best.mediaFisico();
 		    }
 		    return ;
 		}
@@ -150,7 +150,6 @@ public class Model {
 	 *  Multi-obiettivo da massimizzare
 	 */
 	private boolean migliore(Rosa completa) {
-		
 		double primo = (1-t) * completa.mediaOverall() + t * completa.mediaPotenziale();
 		double secondo = (1-q) * completa.mediaTecnica() + q * completa.mediaFisico();
 		
