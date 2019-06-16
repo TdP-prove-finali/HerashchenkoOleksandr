@@ -157,12 +157,11 @@ public class OttimizzaController {
 
 	@FXML
     void doCalcolaRosaOttimizzata(ActionEvent event) {
-		long start = System.nanoTime();
-		
-    	float budget = 0;
+		int budget = 0;
+    	float b = 0;
     	String inserito = txtBudget.getText().trim();
     	try {
-    	      budget = Integer.parseInt(inserito.substring(0, inserito.length()-1));
+    	      b =  Float.parseFloat(inserito.substring(0, inserito.length()-1));
     	} catch(NumberFormatException nfe) {
     	      lblAvv.setText("Devi inserire un numero seguito senza spazi da M o K");
     	      txtBudget.clear();
@@ -171,9 +170,9 @@ public class OttimizzaController {
     	
     	char ch = inserito.charAt(inserito.length()-1);
 		if (ch == 'M')
-			budget *= 1000000;
+			budget = (int)(b*1000000);
 		else if (ch == 'K') 
-			budget *= 1000;
+			budget = (int)(b*1000);
 		else {
 			lblAvv.setText("Devi inserire un numero seguito senza spazi da M o K");
   	        txtBudget.clear();
@@ -200,7 +199,7 @@ public class OttimizzaController {
     	
     	lblAvv.setText("");
     	
-    	Rosa ottimizzata = model.calcolaRosaOttimizzata(venduti, (int)budget, t, q);
+    	Rosa ottimizzata = model.calcolaRosaOttimizzata(venduti, budget, t, q);
     	
     	List<Calciatore> nuovi = new ArrayList<>();
     	for (Calciatore c : ottimizzata.getCalciatori())
@@ -246,14 +245,11 @@ public class OttimizzaController {
     	sldQualita.setDisable(true);
     	sldTempo.setDisable(true);
     	tabella.setSelectionModel(null);
-    	
-    	long stop = System.nanoTime();
-//    	lblAvv.setText("Tempo impiegato: "+(stop-start)/1e9+" secondi");
     }
 	
 	@FXML
     void doAggiungi(MouseEvent event) {
-		if ( tabella.getSelectionModel() != null ) {
+		if ( tabella.getSelectionModel() != null &&  tabella.getSelectionModel().getSelectedItem() != null ) {
 			
 		Calciatore selected = tabella.getSelectionModel().getSelectedItem();
 		Integer index = tabella.getSelectionModel().getSelectedIndex();
@@ -267,6 +263,7 @@ public class OttimizzaController {
 				righe.remove(index);
 		}
 		
+		tabella.getSelectionModel().clearSelection();
 		lblCalciatori.setText(""+venduti.size());
 		lblAvv.setText("");
 		

@@ -57,7 +57,7 @@
 }
 
 .slider .thumb {
-    -fx-background-image: url("palla.png"); 
+    -fx-background-image: url("../../../../../img/palla.png"); 
     -fx-background-size: 20;
     -fx-pref-height: 20;
     -fx-pref-width: 20;

@@ -45,7 +45,6 @@ public class Model {
 	
 	public void setCampionato(Campionato campionato) {
 		this.campionato = campionato;
-		calciatori.addAll(cdao.getCalciatori(campionato.getNome()));
 	}
 
 	public Rosa getSquadraAnalizza() {
@@ -54,13 +53,15 @@ public class Model {
 
 	public void setSquadraAnalizza(Rosa squadra) {
 		this.squadra = squadra;
-		squadra.setCalciatori(cdao.getRosa(squadra.getNome()));
+		this.squadra.setCalciatori(cdao.getRosa(squadra.getNome()));
 	}
 	
 	public Rosa calcolaRosaOttimizzata(List<Calciatore> venduti, int budget, double t, double q) {
 		best = new Rosa("best");
 		Rosa parziale = new Rosa(squadra, venduti);
 		best.setCalciatori(new ArrayList<>(parziale.getCalciatori()));
+		primoBest = (1-t) * best.mediaOverall() + t * best.mediaPotenziale();
+        secondoBest = (1-q) * best.mediaTecnica() + q * best.mediaFisico();
 		this.budget = budget;
 		this.t = t;
 		this.q = q;
@@ -149,8 +150,6 @@ public class Model {
 	 *  Multi-obiettivo da massimizzare
 	 */
 	private boolean migliore(Rosa completa) {
-		if ( best.numCalciatori() < 1 )
-			return true;
 		
 		double primo = (1-t) * completa.mediaOverall() + t * completa.mediaPotenziale();
 		double secondo = (1-q) * completa.mediaTecnica() + q * completa.mediaFisico();
@@ -162,8 +161,10 @@ public class Model {
 	}
 	
 	private void filtraCalciatori(Rosa iniziale, int b) {
+		calciatori.clear();
+		calciatori.addAll(cdao.getCalciatori(campionato.getNome()));
+		calciatori.removeAll(squadra.getCalciatori());
 		List<Calciatore> rimuovi = new ArrayList<>();
-		calciatori.removeAll(squadra.getCalciatori());	
 		
 		double primo = (1-t) * iniziale.mediaOverall() + t * iniziale.mediaPotenziale();
 		double secondo = (1-q) * iniziale.mediaTecnica() + q * iniziale.mediaFisico();
@@ -193,7 +194,6 @@ public class Model {
 		}
 		
 		calciatori.removeAll(rimuovi);
-//		System.out.println("\nfiltrati: "+calciatori.size());
 	}
 	
 	private int max(int a, int b) {
