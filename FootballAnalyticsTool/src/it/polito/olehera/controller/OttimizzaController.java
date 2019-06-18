@@ -163,9 +163,15 @@ public class OttimizzaController {
     	try {
     	      b =  Float.parseFloat(inserito.substring(0, inserito.length()-1));
     	} catch(NumberFormatException nfe) {
-    	      lblAvv.setText("Devi inserire un numero seguito senza spazi da M o K");
+    	      lblAvv.setText("Devi inserire un numero positivo seguito senza spazi da M o K");
     	      txtBudget.clear();
     	      return ;
+    	}
+    	
+    	if ( b < 0 ) {
+    		lblAvv.setText("Devi inserire un numero positivo seguito senza spazi da M o K");
+  	        txtBudget.clear();
+  	        return ;
     	}
     	
     	char ch = inserito.charAt(inserito.length()-1);
@@ -174,7 +180,7 @@ public class OttimizzaController {
 		else if (ch == 'K') 
 			budget = (int)(b*1000);
 		else {
-			lblAvv.setText("Devi inserire un numero seguito senza spazi da M o K");
+			lblAvv.setText("Devi inserire un numero positivo seguito senza spazi da M o K");
   	        txtBudget.clear();
   	        return ;
 		}
@@ -211,7 +217,7 @@ public class OttimizzaController {
     	}
     	
     	lblNum.setText(""+ottimizzata.numCalciatori()+"  ("+nuovi.size()+")");
-    	
+    	lblEta.setText(ottimizzata.etaMedia()+" anni");
     	lblValore.setText(nf.format(ottimizzata.valoreTot())+" €");
     	
     	righe.clear();
